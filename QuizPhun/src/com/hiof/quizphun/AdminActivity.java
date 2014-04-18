@@ -24,7 +24,8 @@ public class AdminActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		} 
 	} 
-
+  
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
