@@ -22,7 +22,7 @@ public class AdminActivity extends ActionBarActivity {
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+		} 
 	} 
 
 	@Override
