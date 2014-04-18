@@ -1,19 +1,27 @@
 package com.hiof.quizphun;
 
+import com.hiof.database.HandleQuery;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 import android.os.Build;
  
 public class AdminActivity extends ActionBarActivity {
 
+	private AdminActivity local;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,6 +31,7 @@ public class AdminActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		} 
+		local = this;
 	} 
   
 	
@@ -47,7 +56,47 @@ public class AdminActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public void buttonLogInClicked(View v){
+		EditText username = (EditText)findViewById(R.id.edittext_admin_username);
+		EditText password = (EditText)findViewById(R.id.edittext_admin_password);
+		String[] values = {username.getText().toString(), password.getText().toString()};
+		new checkLoginInfo().execute(values);
+	}
 
+	private class checkLoginInfo extends AsyncTask<String[], Void, Boolean>{
+
+		private ProgressDialog Dialog = new ProgressDialog(local);
+
+		@Override
+		protected void onPreExecute() {
+			Dialog.setMessage("Validating login..");
+			Dialog.show();
+		}
+		
+		@Override
+		protected Boolean doInBackground(String[]... params) {
+			String[] values = params[0];
+			String username = values[0];
+			String password = values[1];
+			if(HandleQuery.validateUser(username, password)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if(result == true){
+				//TODO: Show admin page fragment for logged in users
+			}else{
+				Toast.makeText(local, "Incorrect login", Toast.LENGTH_SHORT).show();
+			}
+			Dialog.dismiss();
+		}
+		
+	}
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */

@@ -86,9 +86,28 @@ public class HandleQuery {
 
 	public static List<Highscore> getHighscore() {
 		List<Highscore> highscores = new ArrayList<Highscore>(10);
-		final String URL = "http://frigg.hiof.no/bo14-g23/py/hcserv.py?q=";
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpPost httpPost = new HttpPost(URL);
+
 		return highscores;
+	}
+	
+	public static boolean validateUser(String username, String password){
+		String URL = "http://frigg.hiof.no/webutv_h119/android/get.py?q=adminlogin&usrname="+username+"&passwrd="+password;
+		JSONArray array = new JsonParser().getJsonArray(URL);
+		if(array==null){
+			return false;
+		}else{
+			JSONObject obj;
+			try {
+				obj = array.getJSONObject(0);
+				String result = obj.getString("username");
+				if(username.equals(obj.get("username"))){
+					//Username and password is correct
+						return true;
+				}
+			} catch (JSONException e) {
+				return false;
+			}
+		}
+		return false;
 	}
 }
