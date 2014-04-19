@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -49,6 +50,11 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public void onBackPressed() {
 		// Do nothing (to prevent user to accidentally quit QuizPhun)
+	}
+	
+	public void facebookLoginClicked(View v) {
+		//TODO: Implement facebook login
+		Toast.makeText(this, "Facebook login", Toast.LENGTH_SHORT).show();
 	}
 	
 	public void buttonLoginWithUsernameClicked(View v){

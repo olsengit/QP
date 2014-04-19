@@ -5,13 +5,13 @@ public class Answer {
 	private int answerid;
 	private int questionid;
 	private String answer;
-	private boolean isAnwser;
+	private boolean isAnswer;
 	
-	public Answer(int answerid, int questionid, String answer, boolean isAnwser) {
+	public Answer(int answerid, int questionid, String answer, boolean isAnswer) {
 		this.answerid = answerid;
 		this.questionid = questionid;
 		this.answer = answer;
-		this.isAnwser = isAnwser;
+		this.isAnswer = isAnswer;
 	}
 	
 	@Override
@@ -38,10 +38,10 @@ public class Answer {
 		this.answer = answer;
 	}
 	public boolean isAnwser() {
-		return isAnwser;
+		return isAnswer;
 	}
 	public void setAnwser(boolean isAnwser) {
-		this.isAnwser = isAnwser;
+		this.isAnswer = isAnwser;
 	}
 
 

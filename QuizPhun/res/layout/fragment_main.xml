@@ -44,6 +44,7 @@
         android:layout_below="@+id/imageview_main_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp"
-        android:text="Facebook login" />
+        android:text="Facebook login" 
+        android:onClick="facebookLoginClicked"/>
 
 </RelativeLayout>

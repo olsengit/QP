@@ -44,7 +44,7 @@ public class QuizActivity extends ActionBarActivity {
 	private List<Answer> answers = new ArrayList<Answer>(40);
 	private int count = 0;
 	private String categoryname;
-	private int COUNT_QUESTION = 0;
+	private int COUNT_QUESTION = 0; //Why is this uppercase? If it is, it means it is a constant variable, else make it lowercase
 	Button nextQuestion;
 	
 
@@ -156,7 +156,6 @@ public class QuizActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.general, menu);
 		return true;
@@ -210,7 +209,7 @@ public class QuizActivity extends ActionBarActivity {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			if (result == true) {
+			if (result) {
 				startQuiz();
 			} else {
 				if (++count <= 3) {
