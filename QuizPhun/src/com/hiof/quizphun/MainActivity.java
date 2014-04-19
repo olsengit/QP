@@ -1,5 +1,6 @@
 package com.hiof.quizphun;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,21 +21,31 @@ import android.content.Intent;
 public class MainActivity extends ActionBarActivity {
 	
 	private boolean isResumed = false;
-	//test commetn
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		uiHelper = new UiLifecycleHelper(this, callback);
-		uiHelper.onCreate(savedInstanceState);
+		/*android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+		Fragment f = new PlaceholderFragment();
+		FragmentTransaction transaction = fm.beginTransaction();
+		transaction.show(f);*/
+		
 	}
-	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    super.onActivityResult(requestCode, resultCode, data);
+	    uiHelper.onActivityResult(requestCode, resultCode, data);
+	}
 	//facebook-stuff start
 	
 	@Override
@@ -49,12 +60,6 @@ public class MainActivity extends ActionBarActivity {
 	    super.onPause();
 	    uiHelper.onPause();
 	    isResumed = false;
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    super.onActivityResult(requestCode, resultCode, data);
-	    uiHelper.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -75,10 +80,18 @@ public class MainActivity extends ActionBarActivity {
             // If the session state is open:
             // Show category
         	// showFragment(SELECTION, false);
+        	Intent i = new Intent(this, CategoryActivity.class);
+    		String username = "fb";
+    		i.putExtra("USERNAME", username);
+    		startActivity(i);
         } else if (state.isClosed()) {
             // If the session state is closed:
             // Show the login fragment
         	// showFragment(SPLASH, false);
+        	android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+    		Fragment f = new PlaceholderFragment();
+    		FragmentTransaction transaction = fm.beginTransaction();
+    		transaction.show(f);
         }
 	}
 	
