@@ -20,7 +20,7 @@ import android.content.Intent;
 public class MainActivity extends ActionBarActivity {
 	
 	private boolean isResumed = false;
-
+	//test commetn
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
