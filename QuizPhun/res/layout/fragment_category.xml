@@ -8,12 +8,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hiof.quizphun.CategoryActivity$PlaceholderFragment" >
 
+    <TextView 
+        android:id="@+id/textview_userloggedin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:textSize="20sp"
+        android:textStyle="bold"/>
+    
     <ListView
         android:id="@+id/listview_category"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/textview_userloggedin">
     </ListView>
 
 </RelativeLayout>

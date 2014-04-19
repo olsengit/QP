@@ -1,10 +1,8 @@
 package com.hiof.quizphun;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,16 +10,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
-import com.facebook.*;
-import com.facebook.model.*;
-import android.widget.TextView;
-import android.content.Intent;
+
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 
 public class MainActivity extends ActionBarActivity {
 	
-	private boolean isResumed = false;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,11 +33,28 @@ public class MainActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		/*android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-		Fragment f = new PlaceholderFragment();
-		FragmentTransaction transaction = fm.beginTransaction();
-		transaction.show(f);*/
-		
+		/* ---- GET HASH KEY FOR FACEBOOK ------
+		PackageInfo info = null;
+		try {
+			info = getPackageManager().getPackageInfo("com.hiof.quizphun",  PackageManager.GET_SIGNATURES);
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		for (Signature signature : info.signatures)
+		    {
+		        MessageDigest md = null;
+				try {
+					md = MessageDigest.getInstance("SHA");
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		        md.update(signature.toByteArray());
+		        Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+		    }
+		*/
 	}
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -52,14 +67,12 @@ public class MainActivity extends ActionBarActivity {
 	public void onResume() {
 	    super.onResume();
 	    uiHelper.onResume();
-	    isResumed = true;
 	}
 
 	@Override
 	public void onPause() {
 	    super.onPause();
 	    uiHelper.onPause();
-	    isResumed = false;
 	}
 
 	@Override
@@ -76,22 +89,15 @@ public class MainActivity extends ActionBarActivity {
 	
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
-        	// TODO: FIX
-            // If the session state is open:
-            // Show category
-        	// showFragment(SELECTION, false);
+        	System.out.println("Session - navigerer til category" + session.toString());
         	Intent i = new Intent(this, CategoryActivity.class);
     		String username = "fb";
     		i.putExtra("USERNAME", username);
     		startActivity(i);
         } else if (state.isClosed()) {
-            // If the session state is closed:
-            // Show the login fragment
-        	// showFragment(SPLASH, false);
-        	android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-    		Fragment f = new PlaceholderFragment();
-    		FragmentTransaction transaction = fm.beginTransaction();
-    		transaction.show(f);
+        	System.out.println("Ingen session - navigerer ikke");
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.container, new PlaceholderFragment()).addToBackStack(null).commit();
         }
 	}
 	
@@ -101,13 +107,15 @@ public class MainActivity extends ActionBarActivity {
 	    Session session = Session.getActiveSession();
 
 	    if (session != null && session.isOpened()) {
-	        // if the session is already open,
-	        // try to show the selection fragment
-	        // showFragment(SELECTION, false);
+	    	System.out.println("Session resumed" + session.toString());
+	    	Intent i = new Intent(this, CategoryActivity.class);
+    		String username = "fb";
+    		i.putExtra("USERNAME", username);
+    		startActivity(i);
 	    } else {
-	        // otherwise present the splash screen
-	        // and ask the person to login.
-	        // showFragment(SPLASH, false);
+	    	System.out.println("Session not resumed" + session.toString());
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.container, new PlaceholderFragment()).addToBackStack(null).commit();
 	    }
 	}
 	
@@ -149,34 +157,6 @@ public class MainActivity extends ActionBarActivity {
 		// Do nothing (to prevent user to accidentally quit QuizPhun)
 	}
 	
-	public void facebookLoginClicked(View v) {
-		//TODO: Implement facebook login
-		//https://developers.facebook.com/docs/android/scrumptious/authenticate#step1a
-		Toast.makeText(this, "Facebook login", Toast.LENGTH_SHORT).show();
-		// start Facebook Login
-	    Session.openActiveSession(this, true, new Session.StatusCallback() {
-
-	      // callback when session changes state
-	      @Override
-	      public void call(Session session, SessionState state, Exception exception) {
-	        if (session.isOpened()) {
-
-	          // make request to the /me API
-	          Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
-
-	            // callback after Graph API response with user object
-	            @Override
-	            public void onCompleted(GraphUser user, Response response) {
-	              if (user != null) {
-	            	System.out.println("Facebook login" + user.getFirstName());
-	              }
-	            }
-	          });
-	        }
-	      }
-	    } );
-	}
-	
 	public void buttonLoginWithUsernameClicked(View v){
 		//Show login with username fragment
 		getSupportFragmentManager().beginTransaction()
@@ -186,7 +166,9 @@ public class MainActivity extends ActionBarActivity {
 	public void buttonUsernameSelectedClicked(View v){
 		//Send user to CategoryActivity
 		Intent i = new Intent(this, CategoryActivity.class);
-		String username = ((EditText)findViewById(R.id.edittext_main_username)).toString();
+		EditText usernameEditText = (EditText)findViewById(R.id.edittext_main_username);
+		String username = usernameEditText.getText().toString().trim();
+		System.out.println("USERNAME " +username);
 		i.putExtra("USERNAME", username);
 		startActivity(i);
 	}

@@ -8,5 +8,5 @@
     <string name="title_activity_quiz">QuizActivity</string>
     <string name="title_activity_high_score">HighScoreActivity</string>
     <string name="title_activity_admin">AdminActivity</string>
-	<string name="fb_app_id">1375374719394607</string>
+	<string name="facebook_application_id">1375374719394607</string>
 </resources>
