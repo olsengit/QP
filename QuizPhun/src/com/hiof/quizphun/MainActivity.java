@@ -12,8 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.facebook.*;
+import com.facebook.model.*;
+import android.widget.TextView;
+import android.content.Intent;
 
 public class MainActivity extends ActionBarActivity {
+	
+	private boolean isResumed = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +30,85 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);
 	}
+	
+	//facebook-stuff start
+	
+	@Override
+	public void onResume() {
+	    super.onResume();
+	    uiHelper.onResume();
+	    isResumed = true;
+	}
+
+	@Override
+	public void onPause() {
+	    super.onPause();
+	    uiHelper.onPause();
+	    isResumed = false;
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    super.onActivityResult(requestCode, resultCode, data);
+	    uiHelper.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onDestroy() {
+	    super.onDestroy();
+	    uiHelper.onDestroy();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    super.onSaveInstanceState(outState);
+	    uiHelper.onSaveInstanceState(outState);
+	}
+	
+	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+        if (state.isOpened()) {
+        	// TODO: FIX
+            // If the session state is open:
+            // Show category
+        	// showFragment(SELECTION, false);
+        } else if (state.isClosed()) {
+            // If the session state is closed:
+            // Show the login fragment
+        	// showFragment(SPLASH, false);
+        }
+	}
+	
+	@Override
+	protected void onResumeFragments() {
+	    super.onResumeFragments();
+	    Session session = Session.getActiveSession();
+
+	    if (session != null && session.isOpened()) {
+	        // if the session is already open,
+	        // try to show the selection fragment
+	        // showFragment(SELECTION, false);
+	    } else {
+	        // otherwise present the splash screen
+	        // and ask the person to login.
+	        // showFragment(SPLASH, false);
+	    }
+	}
+	
+	private UiLifecycleHelper uiHelper;
+	private Session.StatusCallback callback = 
+	    new Session.StatusCallback() {
+	    @Override
+	    public void call(Session session, 
+	            SessionState state, Exception exception) {
+	        onSessionStateChange(session, state, exception);
+	    }
+	};
+	
+	//facebook-stuff end
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,7 +138,30 @@ public class MainActivity extends ActionBarActivity {
 	
 	public void facebookLoginClicked(View v) {
 		//TODO: Implement facebook login
+		//https://developers.facebook.com/docs/android/scrumptious/authenticate#step1a
 		Toast.makeText(this, "Facebook login", Toast.LENGTH_SHORT).show();
+		// start Facebook Login
+	    Session.openActiveSession(this, true, new Session.StatusCallback() {
+
+	      // callback when session changes state
+	      @Override
+	      public void call(Session session, SessionState state, Exception exception) {
+	        if (session.isOpened()) {
+
+	          // make request to the /me API
+	          Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
+
+	            // callback after Graph API response with user object
+	            @Override
+	            public void onCompleted(GraphUser user, Response response) {
+	              if (user != null) {
+	            	System.out.println("Facebook login" + user.getFirstName());
+	              }
+	            }
+	          });
+	        }
+	      }
+	    } );
 	}
 	
 	public void buttonLoginWithUsernameClicked(View v){
