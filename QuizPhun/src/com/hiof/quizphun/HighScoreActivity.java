@@ -8,12 +8,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hiof.objects.Highscore;
 
@@ -91,8 +89,8 @@ public class HighScoreActivity extends ActionBarActivity {
 			showHighscore = (Button) getView().findViewById(R.id.highscores);
 			newGame.setOnClickListener(this);
 			showHighscore.setOnClickListener(this);
-			highscoreUserTv.setText("Player :" + playername);
-			dateTv.setText("Date :" + date);
+			highscoreUserTv.setText("Player : " + playername);
+			dateTv.setText("Date : " + date);
 			locationTexTv.setText("Location :" + location);
 			pointsTv.setText("Points :" + points);
 			
@@ -103,11 +101,11 @@ public class HighScoreActivity extends ActionBarActivity {
 			//TODO: Finish this shit
 			switch(view.getId()) {
 				case R.id.new_game: {
-
+					//TODO: Navigate to category, remember to send username by the intent
 					break;
 				}
 				case R.id.highscores: {
-					
+					//TODO: Navigate to highscores
 					break;
 				}
 			}

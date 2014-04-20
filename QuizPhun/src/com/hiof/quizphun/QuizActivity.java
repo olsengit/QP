@@ -46,6 +46,7 @@ public class QuizActivity extends ActionBarActivity {
 	private int count = 0;
 	private int points = 0;
 	private String categoryname;
+	private int timeleft;
 	private int COUNT_QUESTION = 0; //Why is this uppercase? If it is, it means it is a constant variable, else make it lowercase
 	Button nextQuestion;
 	
@@ -71,7 +72,7 @@ public class QuizActivity extends ActionBarActivity {
 	}
 
 	private void startQuiz() {
-		if (++COUNT_QUESTION <= 0) {
+		if (++COUNT_QUESTION <= 3) {
 			setTitle(categoryname + " (" + COUNT_QUESTION + " of 10)");
 			nextQuestion();
 		}else{
@@ -105,7 +106,7 @@ public class QuizActivity extends ActionBarActivity {
 		final CountDownTimer cdt = new CountDownTimer(10000, 1000) {
 
 			public void onTick(long millisUntilFinished) {
-				int timeleft = (int) (millisUntilFinished / 1000);
+				timeleft = (int) (millisUntilFinished / 1000);
 				pb.setProgress(timeleft);
 				tv_timeleft.setText(timeleft + "s");
 			}
@@ -136,7 +137,8 @@ public class QuizActivity extends ActionBarActivity {
 				cdt.cancel();
 				//System.out.println("Itemclicked : Parent " + parent + ". View + " + v + ". Pos : " + position + ". id " + id + "griview : " + gridanswers.getChildAt(position));
 				if(answerToThisQuestion.get(position).isAnwser()){
-					System.out.println("CORRECT ANSWER");
+					//System.out.println("CORRECT ANSWER");
+					points += 50 + timeleft;
 					try {
 					    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 					    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
@@ -146,7 +148,8 @@ public class QuizActivity extends ActionBarActivity {
 					}
 					parent.getChildAt(position).setBackgroundColor(Color.GREEN);
 				}else{
-					System.out.println("WRONG ANSWER");
+					//System.out.println("WRONG ANSWER");
+					points -= 15;
 					getApplicationContext();
 					Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
 					 // Vibrate for 500 milliseconds
