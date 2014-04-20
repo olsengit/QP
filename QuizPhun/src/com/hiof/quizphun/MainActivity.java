@@ -11,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.facebook.Request;
-import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
 
 public class MainActivity extends ActionBarActivity {
 	
@@ -38,7 +35,6 @@ public class MainActivity extends ActionBarActivity {
 		try {
 			info = getPackageManager().getPackageInfo("com.hiof.quizphun",  PackageManager.GET_SIGNATURES);
 		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -48,7 +44,6 @@ public class MainActivity extends ActionBarActivity {
 				try {
 					md = MessageDigest.getInstance("SHA");
 				} catch (NoSuchAlgorithmException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		        md.update(signature.toByteArray());
@@ -91,8 +86,6 @@ public class MainActivity extends ActionBarActivity {
         if (state.isOpened()) {
         	System.out.println("Session - navigerer til category" + session.toString());
         	Intent i = new Intent(this, CategoryActivity.class);
-    		String username = "fb";
-    		i.putExtra("USERNAME", username);
     		startActivity(i);
         } else if (state.isClosed()) {
         	System.out.println("Ingen session - navigerer ikke");
@@ -109,8 +102,6 @@ public class MainActivity extends ActionBarActivity {
 	    if (session != null && session.isOpened()) {
 	    	System.out.println("Session resumed" + session.toString());
 	    	Intent i = new Intent(this, CategoryActivity.class);
-    		String username = "fb";
-    		i.putExtra("USERNAME", username);
     		startActivity(i);
 	    } else {
 	    	System.out.println("Session not resumed" + session.toString());

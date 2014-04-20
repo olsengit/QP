@@ -8,9 +8,57 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hiof.quizphun.HighScoreActivity$PlaceholderFragment" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    
+ 	<TextView 
+        android:id="@+id/textview_highscore_userloggedin"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Highscore" />
-
+		android:textSize="20sp"
+        android:textStyle="bold"/>
+ 	
+ 	<TextView 
+        android:id="@+id/textview_date"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:textSize="20sp"
+		android:layout_below="@+id/textview_highscore_userloggedin"
+        android:textStyle="bold"/>
+ 	
+ 	<TextView 
+        android:id="@+id/textview_location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:textSize="20sp"
+		android:layout_below="@+id/textview_date"
+        android:textStyle="bold"/>
+ 	
+ 	<TextView 
+        android:id="@+id/textview_points"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:textSize="20sp"
+		android:layout_below="@+id/textview_location"
+        android:textStyle="bold"/>
+	
+ 	<LinearLayout
+ 	    android:id="@+id/btn_wrapper"
+ 	    android:layout_width="wrap_content"
+ 	    android:layout_height="wrap_content"
+ 	    android:orientation="horizontal"
+        android:layout_below="@+id/textview_points" >
+ 	
+	 	<Button 
+	 	    android:id="@+id/new_game"
+	 	    android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/new_game" />
+	 	
+		<Button 
+	 	    android:id="@+id/highscores"
+	 	    android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/show_highscore" />
+	    
+	</LinearLayout>
+	
 </RelativeLayout>

@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.NetworkInfo.State;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,18 +15,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.android.FbDialog;
 import com.facebook.model.GraphUser;
 import com.hiof.adapter.CustomCategoryAdapter;
 import com.hiof.database.HandleQuery;
@@ -60,7 +56,7 @@ public class CategoryActivity extends ActionBarActivity {
 				makeMeRequest(session);
 			}
 			else {
-				userName = (String) getIntent().getSerializableExtra("USERNAME");
+				userName = getIntent().getStringExtra("USERNAME");
 			}
 		}catch(NullPointerException e){
 			System.out.println("Session i category , ingen facebook session");
@@ -129,8 +125,7 @@ public class CategoryActivity extends ActionBarActivity {
 	
 	private void startQuiz(int categoryid, String category) {
 		Intent i = new Intent(this, QuizActivity.class);
-		String username = getIntent().getStringExtra("USERNAME");
-		i.putExtra("USERNAME", username);
+		i.putExtra("USERNAME", userName);
 		i.putExtra("CATEGORYID", categoryid);
 		i.putExtra("CATEGORYNAME", category);
 		startActivity(i);

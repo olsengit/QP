@@ -1,6 +1,10 @@
 package com.hiof.objects;
 
-public class Highscore {
+import java.io.Serializable;
+
+public class Highscore implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private String playername;
 	private int points;
 	private String location;

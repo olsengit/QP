@@ -1,27 +1,35 @@
 package com.hiof.quizphun;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.hiof.objects.Highscore;
 
 public class HighScoreActivity extends ActionBarActivity {
-
+	
+	private static Highscore h;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_high_score);
 
 		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+			getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
+			h = (Highscore) getIntent().getSerializableExtra("HIGHSCORE");
+			System.out.println("Highscore : "  + h.getDate() + " " + h.getLocation() + " " + h.getPlayername() + " " + h.getPoints());
 		}
 	}
 
@@ -50,7 +58,10 @@ public class HighScoreActivity extends ActionBarActivity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class PlaceholderFragment extends Fragment implements OnClickListener{
+		
+		TextView highscoreUserTv, dateTv, locationTexTv, pointsTv;
+		Button newGame, showHighscore;
 
 		public PlaceholderFragment() {
 		}
@@ -58,10 +69,53 @@ public class HighScoreActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			
 			View rootView = inflater.inflate(R.layout.fragment_high_score,
 					container, false);
 			return rootView;
 		}
+
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+			//TODO: Check if player achieved highscore, write a toast message.
+			String playername = h.getPlayername();
+			String date = h.getDate();
+			String location = h.getLocation();
+			int points = h.getPoints();
+			highscoreUserTv = (TextView) getView().findViewById(R.id.textview_highscore_userloggedin);
+			dateTv = (TextView) getView().findViewById(R.id.textview_date);
+			locationTexTv = (TextView) getView().findViewById(R.id.textview_location);
+			pointsTv = (TextView) getView().findViewById(R.id.textview_points);
+			newGame = (Button) getView().findViewById(R.id.new_game);
+			showHighscore = (Button) getView().findViewById(R.id.highscores);
+			newGame.setOnClickListener(this);
+			showHighscore.setOnClickListener(this);
+			highscoreUserTv.setText("Player :" + playername);
+			dateTv.setText("Date :" + date);
+			locationTexTv.setText("Location :" + location);
+			pointsTv.setText("Points :" + points);
+			
+		}
+
+		@Override
+		public void onClick(View view) {
+			//TODO: Finish this shit
+			switch(view.getId()) {
+				case R.id.new_game: {
+
+					break;
+				}
+				case R.id.highscores: {
+					
+					break;
+				}
+			}
+			
+
+		}
+		
+		
 	}
 
 }

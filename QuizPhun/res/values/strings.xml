@@ -10,4 +10,6 @@
     <string name="title_activity_admin">AdminActivity</string>
 	<string name="facebook_application_id">1375374719394607</string>
 	<string name="facebook_login_text">Log in with Facebook</string>
+	<string name="new_game">New game</string>
+	<string name="show_highscore">Highscores</string>
 </resources>

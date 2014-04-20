@@ -1,18 +1,18 @@
 package com.hiof.quizphun;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.hiof.adapter.CustomAnswerAdapter;
 import com.hiof.database.HandleQuery;
 import com.hiof.objects.Answer;
+import com.hiof.objects.Highscore;
 import com.hiof.objects.Question;
 
 public class QuizActivity extends ActionBarActivity {
@@ -43,6 +44,7 @@ public class QuizActivity extends ActionBarActivity {
 	private List<Question> questions = new ArrayList<Question>(10);
 	private List<Answer> answers = new ArrayList<Answer>(40);
 	private int count = 0;
+	private int points = 0;
 	private String categoryname;
 	private int COUNT_QUESTION = 0; //Why is this uppercase? If it is, it means it is a constant variable, else make it lowercase
 	Button nextQuestion;
@@ -57,7 +59,6 @@ public class QuizActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-
 		categoryname = getIntent().getStringExtra("CATEGORYNAME");
 		local = this;
 		setTitle(categoryname);
@@ -70,14 +71,23 @@ public class QuizActivity extends ActionBarActivity {
 	}
 
 	private void startQuiz() {
-		if (++COUNT_QUESTION <= 2) {
+		if (++COUNT_QUESTION <= 0) {
 			setTitle(categoryname + " (" + COUNT_QUESTION + " of 10)");
 			nextQuestion();
 		}else{
 			System.out.println("Done");
-			
+			String playerName = getIntent().getStringExtra("USERNAME");
+			String location = "loc";
+			Calendar calendar = Calendar.getInstance();
+			Date d = calendar.getTime();
+			String date = d.toString();
+			Highscore h = new Highscore(playerName, points, location, date);
 			//TODO: Quiz is done, calculate score and show fragment with score
 			//		and two buttons: "new game" and "high scores" 
+			Intent intent = new Intent(this, HighScoreActivity.class);
+			intent.putExtra("HIGHSCORE", (Serializable) h);
+			startActivity(intent);
+			finish();
 		}
 	}
 	
