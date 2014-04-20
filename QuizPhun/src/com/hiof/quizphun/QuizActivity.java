@@ -70,10 +70,12 @@ public class QuizActivity extends ActionBarActivity {
 	}
 
 	private void startQuiz() {
-		if (++COUNT_QUESTION <= 10) {
+		if (++COUNT_QUESTION <= 2) {
 			setTitle(categoryname + " (" + COUNT_QUESTION + " of 10)");
 			nextQuestion();
 		}else{
+			System.out.println("Done");
+			
 			//TODO: Quiz is done, calculate score and show fragment with score
 			//		and two buttons: "new game" and "high scores" 
 		}
@@ -122,7 +124,7 @@ public class QuizActivity extends ActionBarActivity {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				cdt.cancel();
-
+				//System.out.println("Itemclicked : Parent " + parent + ". View + " + v + ". Pos : " + position + ". id " + id + "griview : " + gridanswers.getChildAt(position));
 				if(answerToThisQuestion.get(position).isAnwser()){
 					System.out.println("CORRECT ANSWER");
 					try {
@@ -132,14 +134,14 @@ public class QuizActivity extends ActionBarActivity {
 					} catch (Exception e) {
 					    e.printStackTrace();
 					}
-					gridanswers.getChildAt(position).setBackgroundColor(Color.GREEN);
+					parent.getChildAt(position).setBackgroundColor(Color.GREEN);
 				}else{
 					System.out.println("WRONG ANSWER");
 					getApplicationContext();
 					Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
 					 // Vibrate for 500 milliseconds
 					vibrator.vibrate(500);
-					gridanswers.getChildAt(position).setBackgroundColor( Color.RED);
+					parent.getChildAt(position).setBackgroundColor( Color.RED);
 				}
 				
 				nextQuestion = (Button)findViewById(R.id.button_quiz_nextquestion);
@@ -200,8 +202,7 @@ public class QuizActivity extends ActionBarActivity {
 					return false;
 				}
 			} catch (NullPointerException e) {
-				System.out
-						.println("AsyncTask in CategoryActivity returns null while trying to get all categories from database");
+				System.out.println("AsyncTask in CategoryActivity returns null while trying to get all categories from database");
 				return false;
 			}
 			return true;
@@ -213,11 +214,7 @@ public class QuizActivity extends ActionBarActivity {
 				startQuiz();
 			} else {
 				if (++count <= 3) {
-					Toast.makeText(
-							local,
-							"Something went wrong, reloading (" + count
-									+ " of 3 attempts)...", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(local,"Something went wrong, reloading (" + count + " of 3 attempts)...", Toast.LENGTH_SHORT).show();
 					new CountDownTimer(2000, 1000) {
 						@Override
 						public void onTick(long millisUntilFinished) {

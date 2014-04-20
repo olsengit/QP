@@ -64,7 +64,6 @@ public class CategoryActivity extends ActionBarActivity {
 			}
 		}catch(NullPointerException e){
 			System.out.println("Session i category , ingen facebook session");
-			userName = "Hent fra intent";
 		}
 	}
 	
@@ -120,7 +119,7 @@ public class CategoryActivity extends ActionBarActivity {
 								System.out.println("Session" + user.getFirstName());
 								userName = user.getFirstName();
 								userLoggedIn = (TextView)findViewById(R.id.textview_userloggedin);
-								userLoggedIn.setText(userName);
+								userLoggedIn.setText("Player : " + userName);
 							}
 						}
 					}
@@ -226,7 +225,7 @@ public class CategoryActivity extends ActionBarActivity {
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
 			userLoggedIn = (TextView) getView().findViewById(R.id.textview_userloggedin);
-			userLoggedIn.setText(userName);
+			userLoggedIn.setText("Player : " + userName);
 		}		
 	}
 	
