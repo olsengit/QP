@@ -102,7 +102,7 @@ public class HandleQuery {
 				String result = obj.getString("username");
 				if(username.equals(obj.get("username"))){
 					//Username and password is correct
-						return true;
+					return true;
 				}
 			} catch (JSONException e) {
 				return false;
