@@ -34,13 +34,16 @@ public class JsonParser {
 				throw new IOException(statusLine.getReasonPhrase());
 			}
 		} catch (ClientProtocolException e) {
+			e.printStackTrace();
 			// TODO Handle problems..
 			return null;
 		} catch (IOException e) {
+			e.printStackTrace();
 			// TODO Handle problems..
 			return null;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return null;
 		}
 	}

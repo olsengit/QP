@@ -1,18 +1,18 @@
 package com.hiof.quizphun;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.hiof.adapter.CustomAnswerAdapter;
 import com.hiof.database.HandleQuery;
 import com.hiof.objects.Answer;
+import com.hiof.objects.Highscore;
 import com.hiof.objects.Question;
 
 public class QuizActivity extends ActionBarActivity {
@@ -43,8 +44,10 @@ public class QuizActivity extends ActionBarActivity {
 	private List<Question> questions = new ArrayList<Question>(10);
 	private List<Answer> answers = new ArrayList<Answer>(40);
 	private int count = 0;
+	private int points = 0;
 	private String categoryname;
-	private int COUNT_QUESTION = 0;
+	private int timeleft;
+	private int COUNT_QUESTION = 0; //Why is this uppercase? If it is, it means it is a constant variable, else make it lowercase
 	Button nextQuestion;
 	
 
@@ -57,7 +60,6 @@ public class QuizActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-
 		categoryname = getIntent().getStringExtra("CATEGORYNAME");
 		local = this;
 		setTitle(categoryname);
@@ -70,12 +72,23 @@ public class QuizActivity extends ActionBarActivity {
 	}
 
 	private void startQuiz() {
-		if (++COUNT_QUESTION <= 10) {
+		if (++COUNT_QUESTION <= 3) {
 			setTitle(categoryname + " (" + COUNT_QUESTION + " of 10)");
 			nextQuestion();
 		}else{
+			System.out.println("Done");
+			String playerName = getIntent().getStringExtra("USERNAME");
+			String location = "loc";
+			Calendar calendar = Calendar.getInstance();
+			Date d = calendar.getTime();
+			String date = d.toString();
+			Highscore h = new Highscore(playerName, points, location, date);
 			//TODO: Quiz is done, calculate score and show fragment with score
 			//		and two buttons: "new game" and "high scores" 
+			Intent intent = new Intent(this, HighScoreActivity.class);
+			intent.putExtra("HIGHSCORE", (Serializable) h);
+			startActivity(intent);
+			finish();
 		}
 	}
 	
@@ -93,7 +106,7 @@ public class QuizActivity extends ActionBarActivity {
 		final CountDownTimer cdt = new CountDownTimer(10000, 1000) {
 
 			public void onTick(long millisUntilFinished) {
-				int timeleft = (int) (millisUntilFinished / 1000);
+				timeleft = (int) (millisUntilFinished / 1000);
 				pb.setProgress(timeleft);
 				tv_timeleft.setText(timeleft + "s");
 			}
@@ -122,9 +135,10 @@ public class QuizActivity extends ActionBarActivity {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				cdt.cancel();
-
+				//System.out.println("Itemclicked : Parent " + parent + ". View + " + v + ". Pos : " + position + ". id " + id + "griview : " + gridanswers.getChildAt(position));
 				if(answerToThisQuestion.get(position).isAnwser()){
-					System.out.println("CORRECT ANSWER");
+					//System.out.println("CORRECT ANSWER");
+					points += 50 + timeleft;
 					try {
 					    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 					    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
@@ -132,14 +146,15 @@ public class QuizActivity extends ActionBarActivity {
 					} catch (Exception e) {
 					    e.printStackTrace();
 					}
-					gridanswers.getChildAt(position).setBackgroundColor(Color.GREEN);
+					parent.getChildAt(position).setBackgroundColor(Color.GREEN);
 				}else{
-					System.out.println("WRONG ANSWER");
+					//System.out.println("WRONG ANSWER");
+					points -= 15;
 					getApplicationContext();
 					Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
 					 // Vibrate for 500 milliseconds
 					vibrator.vibrate(500);
-					gridanswers.getChildAt(position).setBackgroundColor( Color.RED);
+					parent.getChildAt(position).setBackgroundColor( Color.RED);
 				}
 				
 				nextQuestion = (Button)findViewById(R.id.button_quiz_nextquestion);
@@ -156,7 +171,6 @@ public class QuizActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.general, menu);
 		return true;
@@ -201,8 +215,7 @@ public class QuizActivity extends ActionBarActivity {
 					return false;
 				}
 			} catch (NullPointerException e) {
-				System.out
-						.println("AsyncTask in CategoryActivity returns null while trying to get all categories from database");
+				System.out.println("AsyncTask in CategoryActivity returns null while trying to get all categories from database");
 				return false;
 			}
 			return true;
@@ -210,15 +223,11 @@ public class QuizActivity extends ActionBarActivity {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			if (result == true) {
+			if (result) {
 				startQuiz();
 			} else {
 				if (++count <= 3) {
-					Toast.makeText(
-							local,
-							"Something went wrong, reloading (" + count
-									+ " of 3 attempts)...", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(local,"Something went wrong, reloading (" + count + " of 3 attempts)...", Toast.LENGTH_SHORT).show();
 					new CountDownTimer(2000, 1000) {
 						@Override
 						public void onTick(long millisUntilFinished) {

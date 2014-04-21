@@ -16,10 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.model.GraphUser;
 import com.hiof.adapter.CustomCategoryAdapter;
 import com.hiof.database.HandleQuery;
 import com.hiof.objects.Category;
@@ -29,7 +34,10 @@ public class CategoryActivity extends ActionBarActivity {
 	private List<Category> categories = new ArrayList<Category>();
 	public CategoryActivity local;
 	private int count = 0;
-
+	Session session = null;
+	private static String userName;
+	TextView userLoggedIn;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,6 +49,18 @@ public class CategoryActivity extends ActionBarActivity {
 		}
 		setTitle("Select category");
 		local = this;
+		try{
+			session = Session.getActiveSession();
+			System.out.println("Session i category" + session.toString());
+			if(session != null && session.isOpened()){
+				makeMeRequest(session);
+			}
+			else {
+				userName = getIntent().getStringExtra("USERNAME");
+			}
+		}catch(NullPointerException e){
+			System.out.println("Session i category , ingen facebook session");
+		}
 	}
 	
 	 @Override
@@ -65,6 +85,15 @@ public class CategoryActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.log_out) {
+			if (session != null) {
+				try {
+					session = Session.getActiveSession();
+					session.closeAndClearTokenInformation();
+				} catch (NullPointerException e) {
+					System.out
+							.println("performLogout(): User was logged in with email");
+				}
+			}
 			Intent i = new Intent(this, MainActivity.class);
 			startActivity(i);
 			finish();
@@ -72,10 +101,31 @@ public class CategoryActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	private void makeMeRequest(final Session session) {
+		// Make an API call to get user data and define a
+		// new callback to handle the response.
+		Request request = Request.newMeRequest(session,
+				new Request.GraphUserCallback() {
+
+					@Override
+					public void onCompleted(GraphUser user, Response response) {
+						// If the response is successful
+						if (session == Session.getActiveSession()) {
+							if (user != null) {
+								System.out.println("Session" + user.getFirstName());
+								userName = user.getFirstName();
+								userLoggedIn = (TextView)findViewById(R.id.textview_userloggedin);
+								userLoggedIn.setText("Player : " + userName);
+							}
+						}
+					}
+				});
+		request.executeAsync();
+	}
+	
 	private void startQuiz(int categoryid, String category) {
 		Intent i = new Intent(this, QuizActivity.class);
-		String username = getIntent().getStringExtra("USERNAME");
-		i.putExtra("USERNAME", username);
+		i.putExtra("USERNAME", userName);
 		i.putExtra("CATEGORYID", categoryid);
 		i.putExtra("CATEGORYNAME", category);
 		startActivity(i);
@@ -152,10 +202,12 @@ public class CategoryActivity extends ActionBarActivity {
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
-
+		
 		public PlaceholderFragment() {
 		}
 
+		TextView userLoggedIn;
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -163,6 +215,13 @@ public class CategoryActivity extends ActionBarActivity {
 					container, false);
 			return rootView;
 		}
+
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+			userLoggedIn = (TextView) getView().findViewById(R.id.textview_userloggedin);
+			userLoggedIn.setText("Player : " + userName);
+		}		
 	}
 	
 	

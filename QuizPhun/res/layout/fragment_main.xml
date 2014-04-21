@@ -8,42 +8,40 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hiof.quizphun.MainActivity$PlaceholderFragment" >
 
-    <Button
-        android:id="@+id/button_main_usernamelogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_main_facebooklogin"
-        android:layout_alignRight="@+id/button_main_facebooklogin"
-        android:layout_below="@+id/button_main_facebooklogin"
-        android:layout_marginTop="26dp"
-        android:text="Username"
-        android:onClick="buttonLoginWithUsernameClicked" />
-
-    <TextView
-        android:id="@+id/textview_main_quizphun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button_main_facebooklogin"
-        android:layout_alignRight="@+id/button_main_facebooklogin"
-        android:text="QuizPhun"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <ImageView
         android:id="@+id/imageview_main_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button_main_facebooklogin"
         android:layout_alignParentTop="true"
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_launcher" />
-
-    <Button
-        android:id="@+id/button_main_facebooklogin"
+    
+    <TextView
+        android:id="@+id/textview_main_quizphun"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageview_main_logo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp"
-        android:text="Facebook login" />
+        android:layout_toRightOf="@+id/imageview_main_logo"
+        android:text="QuizPhun"
+        android:layout_marginTop="16dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+   	<com.facebook.widget.LoginButton
+   	   	 xmlns:fb="http://schemas.android.com/apk/res-auto"
+         android:id="@+id/authButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/button_main_usernamelogin"
+         android:layout_below="@+id/imageview_main_logo"
+         fb:login_text="@string/facebook_login_text" />
+    
+	<Button
+        android:id="@+id/button_main_usernamelogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:text="Username"
+        android:layout_below="@+id/authButton"
+        android:onClick="buttonLoginWithUsernameClicked" />
+
 
 </RelativeLayout>
