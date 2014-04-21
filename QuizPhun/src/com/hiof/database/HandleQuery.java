@@ -86,6 +86,25 @@ public class HandleQuery {
 
 	public static List<Highscore> getHighscore() {
 		List<Highscore> highscores = new ArrayList<Highscore>(10);
+		String URL = "http://frigg.hiof.no/webutv_h119/android/get.py?q=highscore";
+		JSONArray highscoreArray = new JsonParser().getJsonArray(URL);
+		try {
+			for (int i = 0; i < highscoreArray.length(); i++) {
+				JSONObject obj;
+				obj = highscoreArray.getJSONObject(i);
+
+				int highscoreid = obj.getInt("highscoreid");
+				String playerName = obj.getString("playername");
+				int points = Integer.parseInt(obj.getString("points"));
+				String location = obj.getString("location");
+				String date = obj.getString("date");
+				highscores.add(new Highscore(playerName, points, location, date));
+				System.out.println("JSON " + playerName + location + date + points);
+				//public Highscore(String playername, int points, String location, String date) {
+			}
+		} catch (JSONException e) {
+			return null;
+		}
 
 		return highscores;
 	}

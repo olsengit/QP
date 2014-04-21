@@ -29,6 +29,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -84,18 +85,6 @@ public class QuizActivity extends ActionBarActivity {
 			Calendar calendar = Calendar.getInstance();
 			Date d = calendar.getTime();
 			date = d.toString();
-			  //set Fragmentclass Arguments
-			//Fragmentclass fragobj=new Fragmentclass();
-			//fragobj.setArguments(bundle);
-			/*
-			Highscore h = new Highscore(playerName, points, location, date);
-			//TODO: Quiz is done, calculate score and show fragment with score
-			//		and two buttons: "new game" and "high scores" 
-			Intent intent = new Intent(this, HighScoreActivity.class);
-			intent.putExtra("HIGHSCORE", (Serializable) h);
-			startActivity(intent);
-			finish();
-			*/
 			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();			
 		}
 	}
@@ -298,11 +287,18 @@ public class QuizActivity extends ActionBarActivity {
 			//TODO: Finish this shit
 			switch(view.getId()) {
 				case R.id.new_game: {
-					//TODO: Navigate to category, remember to send username by the intent
+					Intent intent = new Intent(getActivity().getApplicationContext(), CategoryActivity.class);
+					intent.putExtra("USERNAME", playerName);
+					startActivity(intent);
+					getActivity().finish();
 					break;
 				}
 				case R.id.highscores: {
-					//TODO: Navigate to highscores
+					//Highscore h = new Highscore(playerName, points, location, date);
+					Intent intent = new Intent(getActivity().getApplicationContext(), HighScoreActivity.class);
+					//intent.putExtra("HIGHSCORE", (Serializable) h);
+					startActivity(intent);
+					getActivity().finish();
 					break;
 				}
 			}
