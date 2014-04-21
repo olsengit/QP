@@ -27,11 +27,11 @@ public class CustomHighscoreAdapter extends ArrayAdapter<Highscore> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent){
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.category_listview_row, parent, false);
+		View rowView = inflater.inflate(R.layout.highscore_listview_row, parent, false);
 		
-		TextView highscore = (TextView) rowView.findViewById(R.id.test);
+		TextView tw = (TextView) rowView.findViewById(R.id.test);
 		//System.out.println("obj" + highscoreObjects.get(0).getPlayername());
-		highscore.setText(highscoreObjects.get(position).getPlayername());
+		tw.setText(highscoreObjects.get(position).getPlayername());
 
 		return rowView;
 	}
