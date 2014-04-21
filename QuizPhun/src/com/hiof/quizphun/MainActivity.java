@@ -29,8 +29,8 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-		
-		/* ---- GET HASH KEY FOR FACEBOOK ------
+		/*
+		// ---- GET HASH KEY FOR FACEBOOK ------
 		PackageInfo info = null;
 		try {
 			info = getPackageManager().getPackageInfo("com.hiof.quizphun",  PackageManager.GET_SIGNATURES);
@@ -141,11 +141,6 @@ public class MainActivity extends ActionBarActivity {
 			startActivity(i);
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	@Override
-	public void onBackPressed() {
-		// Do nothing (to prevent user to accidentally quit QuizPhun)
 	}
 	
 	public void buttonLoginWithUsernameClicked(View v){

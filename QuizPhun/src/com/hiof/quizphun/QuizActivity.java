@@ -47,7 +47,7 @@ public class QuizActivity extends ActionBarActivity {
 	private int points = 0;
 	private String categoryname;
 	private int timeleft;
-	private int COUNT_QUESTION = 0; //Why is this uppercase? If it is, it means it is a constant variable, else make it lowercase
+	private int count_question = 0;
 	Button nextQuestion;
 	
 
@@ -72,8 +72,8 @@ public class QuizActivity extends ActionBarActivity {
 	}
 
 	private void startQuiz() {
-		if (++COUNT_QUESTION <= 3) {
-			setTitle(categoryname + " (" + COUNT_QUESTION + " of 10)");
+		if (++count_question <= 3) {
+			setTitle(categoryname + " (" + count_question + " of 10)");
 			nextQuestion();
 		}else{
 			System.out.println("Done");
@@ -121,13 +121,13 @@ public class QuizActivity extends ActionBarActivity {
 		cdt.start();
 
 		final List<Answer> answerToThisQuestion = new ArrayList<Answer>(4);
-		answerToThisQuestion.add(answers.get((COUNT_QUESTION*4)-4));
-		answerToThisQuestion.add(answers.get((COUNT_QUESTION*4)-3));
-		answerToThisQuestion.add(answers.get((COUNT_QUESTION*4)-2));
-		answerToThisQuestion.add(answers.get((COUNT_QUESTION*4)-1));
+		answerToThisQuestion.add(answers.get((count_question*4)-4));
+		answerToThisQuestion.add(answers.get((count_question*4)-3));
+		answerToThisQuestion.add(answers.get((count_question*4)-2));
+		answerToThisQuestion.add(answers.get((count_question*4)-1));
 
 		TextView question = (TextView) findViewById(R.id.textview_quiz_question);
-		question.setText(questions.get((COUNT_QUESTION-1)).getQuestion());
+		question.setText(questions.get((count_question-1)).getQuestion());
 		final GridView gridanswers = (GridView) findViewById(R.id.gridview_quiz_answer);
 		gridanswers.setAdapter(new CustomAnswerAdapter(this, answerToThisQuestion));
 		gridanswers.setEnabled(true);
