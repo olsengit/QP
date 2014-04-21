@@ -87,7 +87,8 @@ public class AdminActivity extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result == true){
-				//TODO: Show admin page fragment for logged in users
+				getSupportFragmentManager().beginTransaction()
+				.replace(R.id.container, new AdminLoggedIn()).commit();
 			}else{
 				Toast.makeText(local, "Incorrect login", Toast.LENGTH_SHORT).show();
 			}
@@ -95,6 +96,23 @@ public class AdminActivity extends ActionBarActivity {
 		}
 		
 	}
+	
+	/**
+	 * A fragment containing a menu for admins who are logged in
+	 */
+	public static class AdminLoggedIn extends Fragment{
+		public AdminLoggedIn(){
+		}
+		
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_admin_loggedin,
+					container, false);
+			return rootView;
+		}
+	}
+	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
