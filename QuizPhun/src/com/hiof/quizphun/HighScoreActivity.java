@@ -34,6 +34,7 @@ public class HighScoreActivity extends ActionBarActivity {
 	private static Highscore h;
 	public HighScoreActivity local;
 	private List<Highscore> highscores = new ArrayList<Highscore>();
+	private int count = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,6 @@ public class HighScoreActivity extends ActionBarActivity {
 	private class fillHighscoreListView extends AsyncTask<Void, Void, List<Highscore>> {
 		private ProgressDialog Dialog = new ProgressDialog(local);
 		private ListView highscoreItems;
-		private int count = 0;
 		
 		@Override
 	    protected void onPreExecute(){

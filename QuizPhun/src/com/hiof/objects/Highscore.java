@@ -5,16 +5,26 @@ import java.io.Serializable;
 public class Highscore implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	private int position;
 	private String playername;
 	private int points;
 	private String location;
 	private String date;
 	
-	public Highscore(String playername, int points, String location, String date) {
+	public Highscore(int position, String playername, int points, String location, String date) {
 		this.playername = playername;
 		this.points = points;
 		this.location = location;
 		this.date = date;
+		this.position = position;
+	}
+	
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 	public String getPlayername() {

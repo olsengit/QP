@@ -34,7 +34,7 @@ public class CategoryActivity extends ActionBarActivity {
 	private List<Category> categories = new ArrayList<Category>();
 	public CategoryActivity local;
 	private int count = 0;
-	Session session = null;
+	private Session session = null;
 	private static String userName;
 	TextView userLoggedIn;
 	
@@ -90,8 +90,7 @@ public class CategoryActivity extends ActionBarActivity {
 					session = Session.getActiveSession();
 					session.closeAndClearTokenInformation();
 				} catch (NullPointerException e) {
-					System.out
-							.println("performLogout(): User was logged in with email");
+					System.out.println("performLogout(): User was logged in with email");
 				}
 			}
 			Intent i = new Intent(this, MainActivity.class);

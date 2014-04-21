@@ -29,9 +29,17 @@ public class CustomHighscoreAdapter extends ArrayAdapter<Highscore> {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.highscore_listview_row, parent, false);
 		
-		TextView tw = (TextView) rowView.findViewById(R.id.test);
-		//System.out.println("obj" + highscoreObjects.get(0).getPlayername());
-		tw.setText(highscoreObjects.get(position).getPlayername());
+		TextView twplayerName = (TextView) rowView.findViewById(R.id.textview_highscore_name);
+		TextView twDate = (TextView) rowView.findViewById(R.id.textview_highscore_date);
+		TextView twLocation = (TextView) rowView.findViewById(R.id.textview_highscore_location);
+		TextView twPoints = (TextView) rowView.findViewById(R.id.textview_highscore_points);
+		TextView twPos = (TextView) rowView.findViewById(R.id.textview_highscore_position);
+		
+		twPos.setText("Pos " + highscoreObjects.get(position).getPosition());
+		twplayerName.setText(highscoreObjects.get(position).getPlayername());
+		twDate.setText(highscoreObjects.get(position).getDate());
+		twLocation.setText(highscoreObjects.get(position).getLocation());
+		twPoints.setText(highscoreObjects.get(position).getPoints()+ "points");
 
 		return rowView;
 	}

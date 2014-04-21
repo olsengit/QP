@@ -93,14 +93,12 @@ public class HandleQuery {
 				JSONObject obj;
 				obj = highscoreArray.getJSONObject(i);
 
-				int highscoreid = obj.getInt("highscoreid");
 				String playerName = obj.getString("playername");
-				int points = Integer.parseInt(obj.getString("points"));
+				int points = obj.getInt(("points"));
 				String location = obj.getString("location");
 				String date = obj.getString("date");
-				highscores.add(new Highscore(playerName, points, location, date));
+				highscores.add(new Highscore(i+1 ,playerName, points, location, date));
 				System.out.println("JSON " + playerName + location + date + points);
-				//public Highscore(String playername, int points, String location, String date) {
 			}
 		} catch (JSONException e) {
 			return null;
