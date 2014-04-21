@@ -1,11 +1,12 @@
 package com.hiof.quizphun;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -35,7 +37,6 @@ import android.widget.Toast;
 import com.hiof.adapter.CustomAnswerAdapter;
 import com.hiof.database.HandleQuery;
 import com.hiof.objects.Answer;
-import com.hiof.objects.Highscore;
 import com.hiof.objects.Question;
 
 public class QuizActivity extends ActionBarActivity {
@@ -44,7 +45,8 @@ public class QuizActivity extends ActionBarActivity {
 	private List<Question> questions = new ArrayList<Question>(10);
 	private List<Answer> answers = new ArrayList<Answer>(40);
 	private int count = 0;
-	private int points = 0;
+	private static int points = 0;
+	private static String playerName, location, date;
 	private String categoryname;
 	private int timeleft;
 	private int count_question = 0;
@@ -77,11 +79,15 @@ public class QuizActivity extends ActionBarActivity {
 			nextQuestion();
 		}else{
 			System.out.println("Done");
-			String playerName = getIntent().getStringExtra("USERNAME");
-			String location = "loc";
+			playerName = getIntent().getStringExtra("USERNAME");
+			location = "loc";
 			Calendar calendar = Calendar.getInstance();
 			Date d = calendar.getTime();
-			String date = d.toString();
+			date = d.toString();
+			  //set Fragmentclass Arguments
+			//Fragmentclass fragobj=new Fragmentclass();
+			//fragobj.setArguments(bundle);
+			/*
 			Highscore h = new Highscore(playerName, points, location, date);
 			//TODO: Quiz is done, calculate score and show fragment with score
 			//		and two buttons: "new game" and "high scores" 
@@ -89,6 +95,8 @@ public class QuizActivity extends ActionBarActivity {
 			intent.putExtra("HIGHSCORE", (Serializable) h);
 			startActivity(intent);
 			finish();
+			*/
+			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();			
 		}
 	}
 	
@@ -248,7 +256,59 @@ public class QuizActivity extends ActionBarActivity {
 			Dialog.dismiss();
 		}
 	}
-
+	
+	/**
+	 * A fragment containing a menu for admins who are logged in
+	 */
+	public static class Score extends Fragment implements OnClickListener{
+		
+		TextView highscoreUserTv, dateTv, locationTexTv, pointsTv;
+		Button newGame, showHighscore;
+		
+		public Score() {}
+			
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_score,
+					container, false);
+			return rootView;
+		}
+		
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+			//TODO: Check if player achieved highscore, write a toast message.
+			highscoreUserTv = (TextView) getView().findViewById(R.id.textview_highscore_userloggedin);
+			dateTv = (TextView) getView().findViewById(R.id.textview_date);
+			locationTexTv = (TextView) getView().findViewById(R.id.textview_location);
+			pointsTv = (TextView) getView().findViewById(R.id.textview_points);
+			newGame = (Button) getView().findViewById(R.id.new_game);
+			showHighscore = (Button) getView().findViewById(R.id.highscores);
+			newGame.setOnClickListener(this);
+			showHighscore.setOnClickListener(this);
+			highscoreUserTv.setText("Player : " + playerName);
+			dateTv.setText("Date : " + date);
+			locationTexTv.setText("Location :" + location);
+			pointsTv.setText("Points :" + points);
+		}
+		
+		@Override
+		public void onClick(View view) {
+			//TODO: Finish this shit
+			switch(view.getId()) {
+				case R.id.new_game: {
+					//TODO: Navigate to category, remember to send username by the intent
+					break;
+				}
+				case R.id.highscores: {
+					//TODO: Navigate to highscores
+					break;
+				}
+			}
+		}
+	}
+	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */

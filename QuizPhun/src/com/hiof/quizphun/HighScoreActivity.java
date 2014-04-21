@@ -56,10 +56,7 @@ public class HighScoreActivity extends ActionBarActivity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment implements OnClickListener{
-		
-		TextView highscoreUserTv, dateTv, locationTexTv, pointsTv;
-		Button newGame, showHighscore;
+	public static class PlaceholderFragment extends Fragment {
 
 		public PlaceholderFragment() {
 		}
@@ -72,44 +69,6 @@ public class HighScoreActivity extends ActionBarActivity {
 					container, false);
 			return rootView;
 		}
-
-		@Override
-		public void onActivityCreated(Bundle savedInstanceState) {
-			super.onActivityCreated(savedInstanceState);
-			//TODO: Check if player achieved highscore, write a toast message.
-			String playername = h.getPlayername();
-			String date = h.getDate();
-			String location = h.getLocation();
-			int points = h.getPoints();
-			highscoreUserTv = (TextView) getView().findViewById(R.id.textview_highscore_userloggedin);
-			dateTv = (TextView) getView().findViewById(R.id.textview_date);
-			locationTexTv = (TextView) getView().findViewById(R.id.textview_location);
-			pointsTv = (TextView) getView().findViewById(R.id.textview_points);
-			newGame = (Button) getView().findViewById(R.id.new_game);
-			showHighscore = (Button) getView().findViewById(R.id.highscores);
-			newGame.setOnClickListener(this);
-			showHighscore.setOnClickListener(this);
-			highscoreUserTv.setText("Player : " + playername);
-			dateTv.setText("Date : " + date);
-			locationTexTv.setText("Location :" + location);
-			pointsTv.setText("Points :" + points);
-		}
-
-		@Override
-		public void onClick(View view) {
-			//TODO: Finish this shit
-			switch(view.getId()) {
-				case R.id.new_game: {
-					//TODO: Navigate to category, remember to send username by the intent
-					break;
-				}
-				case R.id.highscores: {
-					//TODO: Navigate to highscores
-					break;
-				}
-			}
-		}
-		
 		
 	}
 
