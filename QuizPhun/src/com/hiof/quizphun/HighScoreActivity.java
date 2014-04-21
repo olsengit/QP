@@ -93,7 +93,6 @@ public class HighScoreActivity extends ActionBarActivity {
 			dateTv.setText("Date : " + date);
 			locationTexTv.setText("Location :" + location);
 			pointsTv.setText("Points :" + points);
-			
 		}
 
 		@Override
@@ -109,8 +108,6 @@ public class HighScoreActivity extends ActionBarActivity {
 					break;
 				}
 			}
-			
-
 		}
 		
 		
