@@ -1,10 +1,17 @@
 package com.hiof.database;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +22,8 @@ import com.hiof.objects.Highscore;
 import com.hiof.objects.Question;
 
 public class HandleQuery {
-
+	private static String insertUrl = "http://frigg.hiof.no/webutv_h119/android/set.py?q=";
+	
 	public static List<Question> getTenRandomQuestions(int category) {
 		List<Question> questions = new ArrayList<Question>(10);
 
@@ -127,4 +135,108 @@ public class HandleQuery {
 		}
 		return false;
 	}
+	
+	public static boolean insertQuestion(Question q, int categoryid) {
+    	HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(insertUrl);
+
+        try {
+        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+            nameValuePairs.add(new BasicNameValuePair("q", "newquestion"));
+            nameValuePairs.add(new BasicNameValuePair("categoryid", String.valueOf(categoryid)));
+            nameValuePairs.add(new BasicNameValuePair("question", String.valueOf(q.getQuestion())));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            	return true;
+            }
+
+        }catch (UnsupportedEncodingException e){
+            return false;
+        }catch (IOException e) {
+            return false;
+        }
+		return false;
+    }
+	
+	public static boolean insertAnswer(List<Answer> answers) {
+    	HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(insertUrl);
+
+        try {
+        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(9);
+            nameValuePairs.add(new BasicNameValuePair("q", "newanswer"));
+            nameValuePairs.add(new BasicNameValuePair("ans1", String.valueOf(answers.get(0).getAnswer())));
+            nameValuePairs.add(new BasicNameValuePair("ans1corr", String.valueOf(answers.get(0).isAnwser())));
+            nameValuePairs.add(new BasicNameValuePair("ans2", String.valueOf(answers.get(1).getAnswer())));
+            nameValuePairs.add(new BasicNameValuePair("ans2corr", String.valueOf(answers.get(1).isAnwser())));
+            nameValuePairs.add(new BasicNameValuePair("ans3", String.valueOf(answers.get(2).getAnswer())));
+            nameValuePairs.add(new BasicNameValuePair("ans3corr", String.valueOf(answers.get(2).isAnwser())));
+            nameValuePairs.add(new BasicNameValuePair("ans4", String.valueOf(answers.get(3).getAnswer())));
+            nameValuePairs.add(new BasicNameValuePair("ans4corr", String.valueOf(answers.get(3).isAnwser())));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            	return true;
+            }
+        }catch (UnsupportedEncodingException e){
+            return false;
+        }catch (IOException e) {
+            return false;
+        }
+		return false;
+    }
+	
+	public static boolean insertNewAdmin(String username, String password) {
+    	HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(insertUrl);
+
+        try {
+        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+            nameValuePairs.add(new BasicNameValuePair("q", "newadmin"));
+            nameValuePairs.add(new BasicNameValuePair("usrname", String.valueOf(username)));
+            nameValuePairs.add(new BasicNameValuePair("passwrd", String.valueOf(password)));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            	return true;
+            }
+        }catch (UnsupportedEncodingException e){
+            return false;
+        }catch (IOException e) {
+            return false;
+        }
+		return false;
+    }
+	
+	public static boolean insertHighscore(String player, int score, String location) {
+    	HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(insertUrl);
+
+        try {
+        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+            nameValuePairs.add(new BasicNameValuePair("q", "newscore"));
+            nameValuePairs.add(new BasicNameValuePair("player", String.valueOf(player)));
+            nameValuePairs.add(new BasicNameValuePair("score", String.valueOf(score)));
+            nameValuePairs.add(new BasicNameValuePair("location", String.valueOf(location)));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            	return true;
+            }
+        }catch (UnsupportedEncodingException e){
+            return false;
+        }catch (IOException e) {
+            return false;
+        }
+		return false;
+    }
 }
