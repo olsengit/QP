@@ -1,5 +1,8 @@
 package com.hiof.quizphun;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,16 +13,27 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.hiof.database.HandleQuery;
+import com.hiof.objects.Answer;
+import com.hiof.objects.Category;
  
 public class AdminActivity extends ActionBarActivity {
 
 	private AdminActivity local;
-	
+	private static Spinner categorySpinner;
+	private static int categoryid;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,10 +73,71 @@ public class AdminActivity extends ActionBarActivity {
 		EditText username = (EditText)findViewById(R.id.edittext_admin_username);
 		EditText password = (EditText)findViewById(R.id.edittext_admin_password);
 		String[] values = {username.getText().toString(), password.getText().toString()};
-		new checkLoginInfo().execute(values);
+		new CheckLoginInfo().execute(values);
+	}
+	
+	public void newQuestionClicked(View v){
+		getSupportFragmentManager().beginTransaction()
+		.replace(R.id.container, new NewQuestionFragment()).addToBackStack(null).commit();
+		new FillCategorySpinner().execute();
+	}
+	
+	public void newAccountClicked(View v){
+		getSupportFragmentManager().beginTransaction()
+		.replace(R.id.container, new NewAdminUserFragment()).addToBackStack(null).commit();
+	}
+	
+	public void buttonSaveQuestionClicked(View v){
+		Category category = (Category)((Spinner)findViewById(R.id.spinner_admin_newquestion_category)).getSelectedItem();
+		//Object category = ((Spinner)findViewById(R.id.spinner_admin_newquestion_category)).getSelectedItem();
+		final int categoryid = category.getCategoryid();
+		final String question = ((EditText)findViewById(R.id.edittext_admin_question)).getText().toString();
+		String answer1 = ((EditText)findViewById(R.id.edittext_admin_answer1)).getText().toString();
+		boolean ans1 = false;
+		String answer2 = ((EditText)findViewById(R.id.edittext_admin_answer2)).getText().toString();
+		boolean ans2 = false;
+		String answer3 = ((EditText)findViewById(R.id.edittext_admin_answer3)).getText().toString();
+		boolean ans3 = false;
+		String answer4 = ((EditText)findViewById(R.id.edittext_admin_answer4)).getText().toString();
+		boolean ans4 = false;
+		
+		int correctAns = ((RadioGroup)findViewById(R.id.radiogroup_admin_correct_answer)).getCheckedRadioButtonId();
+		switch(correctAns){
+			case 0:
+				ans1 = true;
+				break;
+			case 1:
+				ans2 = true;
+				break;
+			case 2:
+				ans3 = true;
+				break;
+			case 3:
+				ans4 = true;
+				break;
+		}
+		
+		final List<Answer> answers = new ArrayList<Answer>(4);
+		answers.add(new Answer(0, 0, answer1, ans1));
+		answers.add(new Answer(0, 0, answer2, ans2));
+		answers.add(new Answer(0, 0, answer3, ans3));
+		answers.add(new Answer(0, 0, answer4, ans4));
+		
+		Thread addQuestionToDatabase = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				
+				if(HandleQuery.insertQuestion(question, categoryid)){
+					HandleQuery.insertAnswer(answers);
+				}
+			}
+		});
+		addQuestionToDatabase.start();
+		
+		getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlaceholderFragment()).commit();
 	}
 
-	private class checkLoginInfo extends AsyncTask<String[], Void, Boolean>{
+	private class CheckLoginInfo extends AsyncTask<String[], Void, Boolean>{
 
 		private ProgressDialog Dialog = new ProgressDialog(local);
 
@@ -88,22 +163,71 @@ public class AdminActivity extends ActionBarActivity {
 		protected void onPostExecute(Boolean result) {
 			if(result == true){
 				getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, new AdminLoggedIn()).commit();
+				.replace(R.id.container, new AdminLoggedInFragment()).addToBackStack(null).commit();
 			}else{
 				Toast.makeText(local, "Incorrect login", Toast.LENGTH_SHORT).show();
 			}
 			Dialog.dismiss();
 		}
+	}
+	
+	public class FillCategorySpinner extends AsyncTask<Void, Void, List<Category>>{
+
+		@Override
+		protected List<Category> doInBackground(Void... params) {
+			List<Category> categories;
+			try {
+				categories = HandleQuery.getAllCategories();
+				return categories;
+			} catch (NullPointerException e) {
+				return null;
+			}
+		}
 		
+		@Override
+		protected void onPostExecute(List<Category> result){
+			if(result!=null){
+				categorySpinner = (Spinner)findViewById(R.id.spinner_admin_newquestion_category);
+				ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(AdminActivity.this, android.R.layout.simple_spinner_item, result);
+				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				categorySpinner.setAdapter(adapter);
+			}else{
+				Toast.makeText(AdminActivity.this, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	
+	/**
+	 * A fragment for adding new questions to database
+	 */
+	public static class NewQuestionFragment extends Fragment{
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_admin_newquestion,
+					container, false);
+			return rootView;
+		}
+	}
+	
+	/**
+	 * A fragment for adding new admin-users to database
+	 */
+	public static class NewAdminUserFragment extends Fragment{
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_admin_newuser,
+					container, false);
+			return rootView;
+		}
 	}
 	
 	/**
 	 * A fragment containing a menu for admins who are logged in
 	 */
-	public static class AdminLoggedIn extends Fragment{
-		public AdminLoggedIn(){
-		}
-		
+	public static class AdminLoggedInFragment extends Fragment{
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {

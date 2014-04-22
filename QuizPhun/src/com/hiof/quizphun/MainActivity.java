@@ -29,6 +29,8 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		
+		
 		/*
 		// ---- GET HASH KEY FOR FACEBOOK ------
 		PackageInfo info = null;

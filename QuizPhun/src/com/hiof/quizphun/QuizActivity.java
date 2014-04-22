@@ -52,6 +52,7 @@ public class QuizActivity extends ActionBarActivity {
 	private int timeleft;
 	private int count_question = 0;
 	Button nextQuestion;
+	private CountDownTimer cdt;
 	
 
 	@Override
@@ -98,9 +99,10 @@ public class QuizActivity extends ActionBarActivity {
 	private void nextQuestion() {
 		final ProgressBar pb = (ProgressBar) findViewById(R.id.progressbar_quiz_timeleft);
 		final TextView tv_timeleft = (TextView) findViewById(R.id.textview_quiz_timeleft);
+		final GridView gridanswers = (GridView) findViewById(R.id.gridview_quiz_answer);
 
 		pb.setMax(10);
-		final CountDownTimer cdt = new CountDownTimer(10000, 1000) {
+		cdt = new CountDownTimer(10000, 1000) {
 
 			public void onTick(long millisUntilFinished) {
 				timeleft = (int) (millisUntilFinished / 1000);
@@ -110,9 +112,10 @@ public class QuizActivity extends ActionBarActivity {
 
 			public void onFinish() {
 				System.out.println("TIDEN ER UTE");
-				// SHOW CORRECT QUESTION (GREEN)
-
-				startQuiz();
+				// TODO: SHOW CORRECT QUESTION (GREEN)
+				nextQuestion = (Button)findViewById(R.id.button_quiz_nextquestion);
+				nextQuestion.setVisibility(View.VISIBLE);
+				gridanswers.setEnabled(false);
 			}
 		};
 		cdt.start();
@@ -125,7 +128,6 @@ public class QuizActivity extends ActionBarActivity {
 
 		TextView question = (TextView) findViewById(R.id.textview_quiz_question);
 		question.setText(questions.get((count_question-1)).getQuestion());
-		final GridView gridanswers = (GridView) findViewById(R.id.gridview_quiz_answer);
 		gridanswers.setAdapter(new CustomAnswerAdapter(this, answerToThisQuestion));
 		gridanswers.setEnabled(true);
 		gridanswers.setOnItemClickListener(new OnItemClickListener() {
@@ -180,6 +182,7 @@ public class QuizActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.log_out) {
+			cdt.cancel();
 			Intent i = new Intent(this, MainActivity.class);
 			startActivity(i);
 			finish();

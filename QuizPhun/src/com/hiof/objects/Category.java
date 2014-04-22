@@ -1,6 +1,7 @@
 package com.hiof.objects;
 
-public class Category {
+
+public class Category{
 	private int categoryid;
 	private String categoryname;
 	

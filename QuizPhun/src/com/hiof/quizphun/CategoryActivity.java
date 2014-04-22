@@ -66,7 +66,7 @@ public class CategoryActivity extends ActionBarActivity {
 	 @Override
 	    protected void onResume() {
 	        super.onResume();
-	        new fillCategoryListView().execute();
+	        new FillCategoryListView().execute();
 	 }
         
 
@@ -131,7 +131,7 @@ public class CategoryActivity extends ActionBarActivity {
 	}
 
 	
-	private class fillCategoryListView extends AsyncTask<Void, Void, List<Category>> {
+	private class FillCategoryListView extends AsyncTask<Void, Void, List<Category>> {
 		private ProgressDialog Dialog = new ProgressDialog(local);
 		private ListView categoryItems;
 		
@@ -184,7 +184,7 @@ public class CategoryActivity extends ActionBarActivity {
 						}
 						@Override
 						public void onFinish() {
-							new fillCategoryListView().execute();
+							new FillCategoryListView().execute();
 						}
 					  }.start();
 				}else{

@@ -136,7 +136,7 @@ public class HandleQuery {
 		return false;
 	}
 	
-	public static boolean insertQuestion(Question q, int categoryid) {
+	public static boolean insertQuestion(String question, int categoryid) {
     	HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(insertUrl);
 
@@ -144,7 +144,7 @@ public class HandleQuery {
         	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
             nameValuePairs.add(new BasicNameValuePair("q", "newquestion"));
             nameValuePairs.add(new BasicNameValuePair("categoryid", String.valueOf(categoryid)));
-            nameValuePairs.add(new BasicNameValuePair("question", String.valueOf(q.getQuestion())));
+            nameValuePairs.add(new BasicNameValuePair("question", String.valueOf(question)));
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             
             HttpResponse httpResponse = httpClient.execute(httpPost);
