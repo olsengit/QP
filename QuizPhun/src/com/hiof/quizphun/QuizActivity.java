@@ -67,11 +67,13 @@ public class QuizActivity extends ActionBarActivity {
 		categoryname = getIntent().getStringExtra("CATEGORYNAME");
 		local = this;
 		setTitle(categoryname);
+		points = 0;
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		points = 0;
 		new prepareTenQuestions().execute();
 	}
 
@@ -86,7 +88,14 @@ public class QuizActivity extends ActionBarActivity {
 			Calendar calendar = Calendar.getInstance();
 			Date d = calendar.getTime();
 			date = d.toString();
-			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();			
+			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();
+			Thread insertHighscoreThread = new Thread(new Runnable() {
+	            @Override
+	            public void run() {
+	            	HandleQuery.insertHighscore(playerName, points, location);
+	            }
+	        });
+			insertHighscoreThread.start();
 		}
 	}
 	

@@ -35,7 +35,7 @@ public class CustomHighscoreAdapter extends ArrayAdapter<Highscore> {
 		TextView twPoints = (TextView) rowView.findViewById(R.id.textview_highscore_points);
 		TextView twPos = (TextView) rowView.findViewById(R.id.textview_highscore_position);
 		
-		twPos.setText("Pos " + highscoreObjects.get(position).getPosition());
+		twPos.setText(highscoreObjects.get(position).getPosition() + ". ");
 		twplayerName.setText(highscoreObjects.get(position).getPlayername());
 		twDate.setText(highscoreObjects.get(position).getDate());
 		twLocation.setText(highscoreObjects.get(position).getLocation());

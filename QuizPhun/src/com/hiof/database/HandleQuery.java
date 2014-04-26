@@ -163,7 +163,7 @@ public class HandleQuery {
 	
 	public static boolean insertAnswer(List<Answer> answers) {
     	HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(insertUrl);
+        HttpPost httpPost = new HttpPost(insertUrl);//husk å sette inn URL som parameter her
 
         try {
         	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(9);
@@ -193,7 +193,7 @@ public class HandleQuery {
 	
 	public static boolean insertNewAdmin(String username, String password) {
     	HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(insertUrl);
+        HttpPost httpPost = new HttpPost(insertUrl);//husk å sette inn URL som parameter her
 
         try {
         	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
@@ -216,17 +216,19 @@ public class HandleQuery {
     }
 	
 	public static boolean insertHighscore(String player, int score, String location) {
+		final String URL = "http://frigg.hiof.no/webutv_h119/android/set.py?q=";
     	HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(insertUrl);
-
+        HttpPost httpPost = new HttpPost(URL);
+        //http://frigg.hiof.no/webutv_h119/android/set.py?q=newscore&player=PatrickJansen2&score=19000&location=Sarpsborg
+        System.out.println("parameters : q=newscore" + "&player=" +  String.valueOf(player) + "&score=" +  String.valueOf(score) + "&location=" +  String.valueOf(location));
         try {
-        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
             nameValuePairs.add(new BasicNameValuePair("q", "newscore"));
             nameValuePairs.add(new BasicNameValuePair("player", String.valueOf(player)));
             nameValuePairs.add(new BasicNameValuePair("score", String.valueOf(score)));
             nameValuePairs.add(new BasicNameValuePair("location", String.valueOf(location)));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             if (httpResponse.getStatusLine().getStatusCode() == 200) {

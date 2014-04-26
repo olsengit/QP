@@ -7,23 +7,13 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hiof.quizphun.HighScoreActivity$PlaceholderFragment" >
-
-    
- 	<TextView 
-        android:id="@+id/textview_highscore_userloggedin"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-		android:textSize="20sp"
-		android:text="Highscores"
-        android:textStyle="bold"/>
  	
 	<ListView
-        android:id="@+id/listview_highscores"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/textview_highscore_userloggedin">
-        
+	    android:id="@+id/listview_highscores"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:dividerHeight="20dp"
+	    android:layout_marginTop="20dp" >
     </ListView>
 	
 </RelativeLayout>

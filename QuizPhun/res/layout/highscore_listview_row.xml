@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:padding="6dip" >
     
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -26,6 +26,7 @@
 	        android:gravity="left|center_vertical"
 	        android:text="name"
 	        android:layout_marginLeft="5sp"
+	        android:layout_toRightOf="@+id/textview_highscore_position"
 	        android:textSize="20sp"
 	        android:textStyle="bold" />
 	    
@@ -36,6 +37,7 @@
 	        android:gravity="right|center_vertical"
 	        android:text="points"
 	        android:layout_marginLeft="5sp"
+	        android:layout_toRightOf="@id/textview_highscore_name"
 	        android:textSize="20sp"
 	        android:textStyle="bold" />
 
@@ -46,19 +48,22 @@
 	        android:gravity="left|center_vertical"
 	        android:text="date"
 	        android:layout_marginLeft="5sp"
+	        android:layout_below="@id/textview_highscore_points"
 	        android:textSize="20sp"
 	        android:textStyle="bold" />
-	    
+
 		<TextView
-	        android:id="@+id/textview_highscore_location"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="right|center_vertical"
-	        android:text="location"
-	        android:layout_marginLeft="5sp"
-	        android:textSize="20sp"
-	        android:textStyle="bold" />
+		    android:id="@+id/textview_highscore_location"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignBaseline="@+id/textview_highscore_date"
+		    android:layout_alignBottom="@+id/textview_highscore_date"
+		    android:layout_toRightOf="@+id/textview_highscore_date"
+		    android:gravity="right|center_vertical"
+		    android:text="location"
+		    android:textSize="20sp"
+		    android:textStyle="bold" />
     
-	</LinearLayout>
+	</RelativeLayout>
 
 </ScrollView>

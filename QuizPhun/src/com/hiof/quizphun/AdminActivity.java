@@ -128,6 +128,7 @@ public class AdminActivity extends ActionBarActivity {
 			public void run() {
 				
 				if(HandleQuery.insertQuestion(question, categoryid)){
+					System.out.println("asdf Setter inn i database");
 					HandleQuery.insertAnswer(answers);
 				}
 			}
