@@ -23,6 +23,27 @@ import com.hiof.objects.Question;
 
 public class HandleQuery {
 	
+	public static boolean validateUser(String username, String password){
+		String URL = "http://frigg.hiof.no/webutv_h119/android/get.py?q=adminlogin&usrname="+username+"&passwrd="+password;
+		JSONArray array = new JsonParser().getJsonArray(URL);
+		if(array==null){
+			return false;
+		}else{
+			JSONObject obj;
+			try {
+				obj = array.getJSONObject(0);
+				String result = obj.getString("username");
+				if(username.equals(obj.get("username"))){
+					//Username and password is correct
+					return true;
+				}
+			} catch (JSONException e) {
+				return false;
+			}
+		}
+		return false;
+	}
+	
 	public static List<Question> getTenRandomQuestions(int category) {
 		List<Question> questions = new ArrayList<Question>(10);
 
@@ -114,27 +135,6 @@ public class HandleQuery {
 		return highscores;
 	}
 	
-	public static boolean validateUser(String username, String password){
-		String URL = "http://frigg.hiof.no/webutv_h119/android/get.py?q=adminlogin&usrname="+username+"&passwrd="+password;
-		JSONArray array = new JsonParser().getJsonArray(URL);
-		if(array==null){
-			return false;
-		}else{
-			JSONObject obj;
-			try {
-				obj = array.getJSONObject(0);
-				String result = obj.getString("username");
-				if(username.equals(obj.get("username"))){
-					//Username and password is correct
-					return true;
-				}
-			} catch (JSONException e) {
-				return false;
-			}
-		}
-		return false;
-	}
-	
 	public static boolean insertQuestionAndAnswer(String question, int categoryid, List<Answer> answers) {
 		final String URL = "http://frigg.hiof.no/webutv_h119/android/set.py?q=";
 		HttpClient httpClient = new DefaultHttpClient();
@@ -159,7 +159,6 @@ public class HandleQuery {
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             if (httpResponse.getStatusLine().getStatusCode() == 200) {
-            	System.out.println("WHAT? BUrde jo funka!!");
             	return true;
             }
 
@@ -209,6 +208,30 @@ public class HandleQuery {
             nameValuePairs.add(new BasicNameValuePair("player", String.valueOf(player)));
             nameValuePairs.add(new BasicNameValuePair("score", String.valueOf(score)));
             nameValuePairs.add(new BasicNameValuePair("location", String.valueOf(location)));
+            
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            	return true;
+            }
+        }catch (UnsupportedEncodingException e){
+            return false;
+        }catch (IOException e) {
+            return false;
+        }
+		return false;
+    }
+	
+	public static boolean deleteQuestion(int questionid) {
+		final String URL = "http://frigg.hiof.no/webutv_h119/android/update.py?q=";
+    	HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(URL);
+   
+        try {
+        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("q", "deletequestion"));
+            nameValuePairs.add(new BasicNameValuePair("questionid", String.valueOf(questionid)));
             
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
             HttpResponse httpResponse = httpClient.execute(httpPost);
