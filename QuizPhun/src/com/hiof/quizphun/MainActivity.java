@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -28,8 +29,7 @@ public class MainActivity extends ActionBarActivity {
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
-		
+		}		
 		
 		/*
 		// ---- GET HASH KEY FOR FACEBOOK ------
@@ -59,6 +59,8 @@ public class MainActivity extends ActionBarActivity {
 	    uiHelper.onActivityResult(requestCode, resultCode, data);
 	}
 	//facebook-stuff start
+	
+	
 	
 	@Override
 	public void onResume() {
@@ -156,9 +158,14 @@ public class MainActivity extends ActionBarActivity {
 		Intent i = new Intent(this, CategoryActivity.class);
 		EditText usernameEditText = (EditText)findViewById(R.id.edittext_main_username);
 		String username = usernameEditText.getText().toString().trim();
-		System.out.println("USERNAME " +username);
-		i.putExtra("USERNAME", username);
-		startActivity(i);
+		if(username.length() == 0 || username.length() > 12) {
+			Toast.makeText(getApplicationContext(), "Username can`t contains 0 or more than 12 letters", Toast.LENGTH_SHORT).show();
+		}
+		else {
+			System.out.println("USERNAME " +username);
+			i.putExtra("USERNAME", username);
+			startActivity(i);
+		}
 	}
 
 	/**

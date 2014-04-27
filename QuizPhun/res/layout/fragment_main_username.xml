@@ -11,13 +11,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="186dp"
         android:onClick="buttonUsernameSelectedClicked"
-        android:text="Start!" />
+        android:text="@string/Start" />
 
     <EditText
         android:id="@+id/edittext_main_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="@string/choose_username"
         android:layout_alignBottom="@+id/button_main_selectusername"
+        android:gravity="center_horizontal"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="49dp"
         android:ems="10"

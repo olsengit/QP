@@ -13,20 +13,11 @@
         android:textStyle="bold"/>
  	
  	<TextView 
-        android:id="@+id/textview_date"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-		android:textSize="20sp"
-		android:layout_below="@+id/textview_highscore_userloggedin"
-		android:text="date"
-        android:textStyle="bold"/>
- 	
- 	<TextView 
         android:id="@+id/textview_location"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
 		android:textSize="20sp"
-		android:layout_below="@+id/textview_date"
+		android:layout_below="@+id/textview_highscore_userloggedin"
 		android:text="loc"		
         android:textStyle="bold"/>
  	

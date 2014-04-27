@@ -16,6 +16,10 @@
         android:icon="@drawable/qp"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+        
+        <service android:name=".ReminderService"
+         android:exported="false"/>
+        
         <activity
             android:name="com.hiof.quizphun.MainActivity"
             android:label="@string/app_name" >

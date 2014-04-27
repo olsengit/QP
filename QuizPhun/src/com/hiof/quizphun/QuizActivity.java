@@ -47,14 +47,13 @@ public class QuizActivity extends ActionBarActivity {
 	private List<Answer> answers = new ArrayList<Answer>(40);
 	private int count = 0;
 	private static int points = 0;
-	private static String playerName, location, date;
+	private static String playerName, location;
 	private String categoryname;
 	private int timeleft;
 	private int count_question = 0;
 	Button nextQuestion;
 	private CountDownTimer cdt;
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,12 +66,14 @@ public class QuizActivity extends ActionBarActivity {
 		categoryname = getIntent().getStringExtra("CATEGORYNAME");
 		local = this;
 		setTitle(categoryname);
+		System.out.println("Point reset");
 		points = 0;
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		System.out.println("Point reset");
 		points = 0;
 		new prepareTenQuestions().execute();
 	}
@@ -85,9 +86,6 @@ public class QuizActivity extends ActionBarActivity {
 			System.out.println("Done");
 			playerName = getIntent().getStringExtra("USERNAME");
 			location = "loc";
-			Calendar calendar = Calendar.getInstance();
-			Date d = calendar.getTime();
-			date = d.toString();
 			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();
 			Thread insertHighscoreThread = new Thread(new Runnable() {
 	            @Override
@@ -170,6 +168,13 @@ public class QuizActivity extends ActionBarActivity {
 				gridanswers.setEnabled(false);
 			}
 		});
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		Intent reminderServiceIntent = new Intent(this, ReminderService.class);
+		startService(reminderServiceIntent);
 	}
 
 	@Override
@@ -263,7 +268,7 @@ public class QuizActivity extends ActionBarActivity {
 	 */
 	public static class Score extends Fragment implements OnClickListener{
 		
-		TextView highscoreUserTv, dateTv, locationTexTv, pointsTv;
+		TextView highscoreUserTv, locationTexTv, pointsTv;
 		Button newGame, showHighscore;
 		
 		public Score() {}
@@ -281,7 +286,6 @@ public class QuizActivity extends ActionBarActivity {
 			super.onActivityCreated(savedInstanceState);
 			//TODO: Check if player achieved highscore, write a toast message.
 			highscoreUserTv = (TextView) getView().findViewById(R.id.textview_highscore_userloggedin);
-			dateTv = (TextView) getView().findViewById(R.id.textview_date);
 			locationTexTv = (TextView) getView().findViewById(R.id.textview_location);
 			pointsTv = (TextView) getView().findViewById(R.id.textview_points);
 			newGame = (Button) getView().findViewById(R.id.new_game);
@@ -289,14 +293,12 @@ public class QuizActivity extends ActionBarActivity {
 			newGame.setOnClickListener(this);
 			showHighscore.setOnClickListener(this);
 			highscoreUserTv.setText("Player : " + playerName);
-			dateTv.setText("Date : " + date);
 			locationTexTv.setText("Location :" + location);
 			pointsTv.setText("Points :" + points);
 		}
 		
 		@Override
 		public void onClick(View view) {
-			//TODO: Finish this shit
 			switch(view.getId()) {
 				case R.id.new_game: {
 					Intent intent = new Intent(getActivity().getApplicationContext(), CategoryActivity.class);
@@ -306,9 +308,7 @@ public class QuizActivity extends ActionBarActivity {
 					break;
 				}
 				case R.id.highscores: {
-					//Highscore h = new Highscore(playerName, points, location, date);
 					Intent intent = new Intent(getActivity().getApplicationContext(), HighScoreActivity.class);
-					//intent.putExtra("HIGHSCORE", (Serializable) h);
 					startActivity(intent);
 					getActivity().finish();
 					break;
