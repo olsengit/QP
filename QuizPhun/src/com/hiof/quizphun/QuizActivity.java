@@ -205,6 +205,9 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 					if(answerToThisQuestion.get(i).isAnwser())
 						answerId = i;
 				}
+				Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+				 // Vibrate for 500 milliseconds
+				vibrator.vibrate(500);
 				gridanswers.getChildAt(answerId).setBackgroundColor(Color.GREEN);
 				nextQuestion = (Button)findViewById(R.id.button_quiz_nextquestion);
 				nextQuestion.setVisibility(View.VISIBLE);
