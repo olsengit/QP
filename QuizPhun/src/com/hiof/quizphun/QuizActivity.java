@@ -1,17 +1,20 @@
 package com.hiof.quizphun;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -19,18 +22,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,19 +44,22 @@ import com.hiof.database.HandleQuery;
 import com.hiof.objects.Answer;
 import com.hiof.objects.Question;
 
-public class QuizActivity extends ActionBarActivity {
+public class QuizActivity extends ActionBarActivity implements LocationListener {
 
 	private QuizActivity local;
 	private List<Question> questions = new ArrayList<Question>(10);
 	private List<Answer> answers = new ArrayList<Answer>(40);
 	private int count = 0;
 	private static int points = 0;
-	private static String playerName, location;
-	private String categoryname;
+	private static String playerName, locationString;
 	private int timeleft;
+	private double lat, lon;
 	private int count_question = 0;
 	Button nextQuestion;
 	private CountDownTimer cdt;
+	private LocationManager locationManager;
+	private String provider, city, categoryname;
+	private Location location;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,36 +76,103 @@ public class QuizActivity extends ActionBarActivity {
 		System.out.println("Point reset");
 		System.out.println("LifeCycle onCreate");
 		points = 0;
+		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		Criteria criteria = new Criteria();
+	    provider = locationManager.getBestProvider(criteria, false);
+	    location = locationManager.getLastKnownLocation(provider);
 	}
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		System.out.println("Point reset");
-		System.out.println("LifeCycle onResume");
-		points = 0;
+		locationManager.requestLocationUpdates(provider, 400, 1, this);
 		new prepareTenQuestions().execute();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		Intent reminderServiceIntent = new Intent(this, ReminderService.class);
+		startService(reminderServiceIntent);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// Do nothing if back pressed during game
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		locationManager.removeUpdates(this);
+	}
+	
+	@Override
+	public void onLocationChanged(Location location) {
+	    lat = (location.getLatitude());
+	    lon = (location.getLongitude());
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+	}
+	
+	@Override
+	public void onProviderDisabled(String provider) {
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
 	}
 
 	private void startQuiz() {
-		if (++count_question <= 3) {
+		if (++count_question <= 1) {
 			setTitle(categoryname + " (" + count_question + " of 10)");
 			nextQuestion();
 		}else{
-			System.out.println("Done");
+			getGpsLocation();
+			convertGpsLocToCity();
 			playerName = getIntent().getStringExtra("USERNAME");
-			location = "loc";
+			locationString = city;
 			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();
 			Thread insertHighscoreThread = new Thread(new Runnable() {
 	            @Override
 	            public void run() {
-	            	HandleQuery.insertHighscore(playerName, points, location);
+	            	HandleQuery.insertHighscore(playerName, points, locationString);
 	            }
 	        });
 			insertHighscoreThread.start();
 		}
 	}
 	
+	private void convertGpsLocToCity() {
+		Geocoder gcd = new Geocoder(this, Locale.getDefault());
+		List<Address> addresses = null;
+		try {
+			addresses = gcd.getFromLocation(lat, lon, 1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (addresses.size() > 0) 
+		    city = addresses.get(0).getLocality();
+	}
+
+	private void getGpsLocation() {
+		boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		if(!gpsEnabled) {
+			Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			startActivity(intent);
+		}
+
+	    if (location != null) {
+	        onLocationChanged(location);
+	    } 
+	    else {
+	    	Toast.makeText(this, "Cant get location", Toast.LENGTH_SHORT).show();
+	    }
+	    
+	}
+
 	public void nextQuestionClicked(View v){
 		startQuiz();
 		nextQuestion = (Button)findViewById(R.id.button_quiz_nextquestion);
@@ -175,37 +248,6 @@ public class QuizActivity extends ActionBarActivity {
 				gridanswers.setEnabled(false);
 			}
 		});
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		System.out.println("LifeCycle onStop");
-		Intent reminderServiceIntent = new Intent(this, ReminderService.class);
-		startService(reminderServiceIntent);
-		System.out.println("Service startes");
-	}
-	
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		System.out.println("LifeCycle onDestroy");
-	}
-	
-	public void onRestart() {
-		super.onRestart();
-		System.out.println("LifeCycle onRestart");
-	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		System.out.println("LifeCycle onStart");
-	}
-
-	@Override
-	public void onBackPressed() {
-		// Do nothing if back pressed during game
 	}
 
 	@Override
@@ -318,7 +360,7 @@ public class QuizActivity extends ActionBarActivity {
 			newGame.setOnClickListener(this);
 			showHighscore.setOnClickListener(this);
 			highscoreUserTv.setText("Player : " + playerName);
-			locationTexTv.setText("Location :" + location);
+			locationTexTv.setText("Location :" + locationString);
 			pointsTv.setText("Points :" + points);
 		}
 		
@@ -358,5 +400,4 @@ public class QuizActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
-
 }
