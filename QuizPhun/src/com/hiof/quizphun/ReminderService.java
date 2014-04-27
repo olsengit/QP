@@ -29,7 +29,7 @@ public class ReminderService extends IntentService {
 			@Override
 			public void run() {
 				if(!firstCall) {
-					Intent intent = new Intent();
+					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 					PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 					
 					Notification n = new NotificationCompat.Builder(getApplicationContext()) 
@@ -47,6 +47,7 @@ public class ReminderService extends IntentService {
 		t.start();
 		try {
 			t.sleep(10000);
+			//t.sleep(1440000);//Asleep for 24 hours
 			RemindUser(false);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
