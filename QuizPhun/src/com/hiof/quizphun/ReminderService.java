@@ -9,23 +9,33 @@ import android.support.v4.app.NotificationCompat;
 
 public class ReminderService extends IntentService {
 	
+	Thread reminderThread;
+	
 	public ReminderService() {
 		super("ReminderService");
 	}
 
 	@Override
+	public void onCreate() {
+		super.onCreate();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
+
+	@Override
 	protected void onHandleIntent(Intent intent) {
-		//Do work here, might be incoming data from the intent
-		System.out.println("Service started");
-		RemindUser(true);
+		RemindUser(false);
 	}
 	
 	/*
-	 * Recursive method - Remind user to play if x minutes has passed since the user played
+	 * Remind user to play if x minutes has passed since the user played
 	 * A notification message will be sent
 	 */
 	private void RemindUser(final boolean firstCall) {
-		Thread t = new Thread(new Runnable() {
+		reminderThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				if(!firstCall) {
@@ -34,7 +44,7 @@ public class ReminderService extends IntentService {
 					
 					Notification n = new NotificationCompat.Builder(getApplicationContext()) 
 					.setContentTitle("QuizPhun")
-					.setContentText("You haven't played for a while, come play")
+					.setContentText("You haven't played for 24 hours, come play")
 					.setSmallIcon(R.drawable.qp)
 					.setContentIntent(pIntent).build(); 
 					
@@ -44,13 +54,12 @@ public class ReminderService extends IntentService {
 				}
 			}
 		});
-		t.start();
 		try {
-			t.sleep(10000);
-			//t.sleep(1440000);//Asleep for 24 hours
-			RemindUser(false);
+			reminderThread.sleep(10000);
+			//reminderThread.sleep(1440000);//Asleep for 24 hours
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		reminderThread.start();
 	}
 }

@@ -43,8 +43,6 @@ public class HighScoreActivity extends ActionBarActivity {
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
-			//h = (Highscore) getIntent().getSerializableExtra("HIGHSCORE");
-			//System.out.println("Highscore : "  + h.getDate() + " " + h.getLocation() + " " + h.getPlayername() + " " + h.getPoints());
 			local = this;
 		}
 	}
