@@ -8,6 +8,7 @@ import java.util.List;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -53,7 +54,7 @@ public class QuizActivity extends ActionBarActivity {
 	private int count_question = 0;
 	Button nextQuestion;
 	private CountDownTimer cdt;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,6 +68,7 @@ public class QuizActivity extends ActionBarActivity {
 		local = this;
 		setTitle(categoryname);
 		System.out.println("Point reset");
+		System.out.println("LifeCycle onCreate");
 		points = 0;
 	}
 
@@ -74,6 +76,7 @@ public class QuizActivity extends ActionBarActivity {
 	protected void onResume() {
 		super.onResume();
 		System.out.println("Point reset");
+		System.out.println("LifeCycle onResume");
 		points = 0;
 		new prepareTenQuestions().execute();
 	}
@@ -108,6 +111,12 @@ public class QuizActivity extends ActionBarActivity {
 		final TextView tv_timeleft = (TextView) findViewById(R.id.textview_quiz_timeleft);
 		final GridView gridanswers = (GridView) findViewById(R.id.gridview_quiz_answer);
 
+		final List<Answer> answerToThisQuestion = new ArrayList<Answer>(4);
+		answerToThisQuestion.add(answers.get((count_question*4)-4));
+		answerToThisQuestion.add(answers.get((count_question*4)-3));
+		answerToThisQuestion.add(answers.get((count_question*4)-2));
+		answerToThisQuestion.add(answers.get((count_question*4)-1));
+		
 		pb.setMax(10);
 		cdt = new CountDownTimer(10000, 1000) {
 
@@ -118,20 +127,18 @@ public class QuizActivity extends ActionBarActivity {
 			}
 
 			public void onFinish() {
-				System.out.println("TIDEN ER UTE");
-				// TODO: SHOW CORRECT QUESTION (GREEN)
+				int answerId = 0;
+				for(int i = 0; i < 4; i++) {
+					if(answerToThisQuestion.get(i).isAnwser())
+						answerId = i;
+				}
+				gridanswers.getChildAt(answerId).setBackgroundColor(Color.GREEN);
 				nextQuestion = (Button)findViewById(R.id.button_quiz_nextquestion);
 				nextQuestion.setVisibility(View.VISIBLE);
 				gridanswers.setEnabled(false);
 			}
 		};
 		cdt.start();
-
-		final List<Answer> answerToThisQuestion = new ArrayList<Answer>(4);
-		answerToThisQuestion.add(answers.get((count_question*4)-4));
-		answerToThisQuestion.add(answers.get((count_question*4)-3));
-		answerToThisQuestion.add(answers.get((count_question*4)-2));
-		answerToThisQuestion.add(answers.get((count_question*4)-1));
 
 		TextView question = (TextView) findViewById(R.id.textview_quiz_question);
 		question.setText(questions.get((count_question-1)).getQuestion());
@@ -173,9 +180,27 @@ public class QuizActivity extends ActionBarActivity {
 	@Override
 	public void onStop() {
 		super.onStop();
-		//TODO: Stopper aldri å sende om den er resumed
+		System.out.println("LifeCycle onStop");
 		Intent reminderServiceIntent = new Intent(this, ReminderService.class);
 		startService(reminderServiceIntent);
+		System.out.println("Service startes");
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		System.out.println("LifeCycle onDestroy");
+	}
+	
+	public void onRestart() {
+		super.onRestart();
+		System.out.println("LifeCycle onRestart");
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		System.out.println("LifeCycle onStart");
 	}
 
 	@Override
@@ -285,7 +310,6 @@ public class QuizActivity extends ActionBarActivity {
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			//TODO: Check if player achieved highscore, write a toast message.
 			highscoreUserTv = (TextView) getView().findViewById(R.id.textview_highscore_userloggedin);
 			locationTexTv = (TextView) getView().findViewById(R.id.textview_location);
 			pointsTv = (TextView) getView().findViewById(R.id.textview_points);
