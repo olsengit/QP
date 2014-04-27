@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -33,6 +34,7 @@ public class AdminActivity extends ActionBarActivity {
 	private AdminActivity local;
 	private static Spinner categorySpinner;
 	private static int categoryid;
+	private int correctAns = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class AdminActivity extends ActionBarActivity {
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, new AdminLoginFragment()).commit();
 		} 
 		local = this;
 	} 
@@ -81,16 +83,11 @@ public class AdminActivity extends ActionBarActivity {
 		.replace(R.id.container, new NewQuestionFragment()).addToBackStack(null).commit();
 		new FillCategorySpinner().execute();
 	}
-	
-	public void newAccountClicked(View v){
-		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.container, new NewAdminUserFragment()).addToBackStack(null).commit();
-	}
+
 	
 	public void buttonSaveQuestionClicked(View v){
 		Category category = (Category)((Spinner)findViewById(R.id.spinner_admin_newquestion_category)).getSelectedItem();
-		//Object category = ((Spinner)findViewById(R.id.spinner_admin_newquestion_category)).getSelectedItem();
-		final int categoryid = category.getCategoryid();
+		final int catid = category.getCategoryid();
 		final String question = ((EditText)findViewById(R.id.edittext_admin_question)).getText().toString();
 		String answer1 = ((EditText)findViewById(R.id.edittext_admin_answer1)).getText().toString();
 		boolean ans1 = false;
@@ -101,7 +98,15 @@ public class AdminActivity extends ActionBarActivity {
 		String answer4 = ((EditText)findViewById(R.id.edittext_admin_answer4)).getText().toString();
 		boolean ans4 = false;
 		
-		int correctAns = ((RadioGroup)findViewById(R.id.radiogroup_admin_correct_answer)).getCheckedRadioButtonId();
+		RadioGroup rg = ((RadioGroup)findViewById(R.id.radiogroup_admin_correct_answer));
+		
+		rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				correctAns = checkedId;
+			}
+		});
 		switch(correctAns){
 			case 0:
 				ans1 = true;
@@ -115,6 +120,9 @@ public class AdminActivity extends ActionBarActivity {
 			case 3:
 				ans4 = true;
 				break;
+			default:
+				ans1 = true;
+				break;
 		}
 		
 		final List<Answer> answers = new ArrayList<Answer>(4);
@@ -123,19 +131,15 @@ public class AdminActivity extends ActionBarActivity {
 		answers.add(new Answer(0, 0, answer3, ans3));
 		answers.add(new Answer(0, 0, answer4, ans4));
 		
-		Thread addQuestionToDatabase = new Thread(new Runnable() {
+		Thread insertQuestionToDatabaseThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				
-				if(HandleQuery.insertQuestion(question, categoryid)){
-					System.out.println("asdf Setter inn i database");
-					HandleQuery.insertAnswer(answers);
-				}
+				HandleQuery.insertQuestionAndAnswer(question, catid, answers);
 			}
 		});
-		addQuestionToDatabase.start();
+		insertQuestionToDatabaseThread.start();
 		
-		getSupportFragmentManager().beginTransaction().replace(R.id.container, new PlaceholderFragment()).commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.container, new AdminLoggedInFragment()).commit();
 	}
 
 	private class CheckLoginInfo extends AsyncTask<String[], Void, Boolean>{
@@ -212,18 +216,6 @@ public class AdminActivity extends ActionBarActivity {
 		}
 	}
 	
-	/**
-	 * A fragment for adding new admin-users to database
-	 */
-	public static class NewAdminUserFragment extends Fragment{
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_admin_newuser,
-					container, false);
-			return rootView;
-		}
-	}
 	
 	/**
 	 * A fragment containing a menu for admins who are logged in
@@ -241,9 +233,9 @@ public class AdminActivity extends ActionBarActivity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class AdminLoginFragment extends Fragment {
 
-		public PlaceholderFragment() {
+		public AdminLoginFragment() {
 		}
 
 		@Override

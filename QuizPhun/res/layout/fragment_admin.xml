@@ -9,39 +9,35 @@
     tools:context="com.hiof.quizphun.AdminActivity$PlaceholderFragment" >
 
     <EditText
-        android:id="@+id/edittext_admin_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="189dp"
-        android:ems="10"
-        android:hint="Password"
-        android:gravity="center"
-        android:inputType="textPassword" >
-
-        <requestFocus />
-    </EditText>
-
-    <EditText
         android:id="@+id/edittext_admin_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/edittext_admin_password"
-        android:layout_alignRight="@+id/edittext_admin_password"
-        android:layout_marginBottom="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:ems="10"
-        android:gravity="center"
         android:hint="Username"
         android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/edittext_admin_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edittext_admin_username"
+        android:layout_alignRight="@+id/edittext_admin_username"
+        android:layout_below="@+id/edittext_admin_username"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/button_admin_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/edittext_admin_password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp"
+        android:layout_alignRight="@+id/edittext_admin_password"
+        android:layout_below="@+id/edittext_admin_password"
+        android:layout_marginTop="18dp"
         android:onClick="buttonLogInClicked"
         android:text="Log in" />
 

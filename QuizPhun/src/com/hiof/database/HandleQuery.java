@@ -22,7 +22,6 @@ import com.hiof.objects.Highscore;
 import com.hiof.objects.Question;
 
 public class HandleQuery {
-	private static String insertUrl = "http://frigg.hiof.no/webutv_h119/android/set.py?q=";
 	
 	public static List<Question> getTenRandomQuestions(int category) {
 		List<Question> questions = new ArrayList<Question>(10);
@@ -136,53 +135,34 @@ public class HandleQuery {
 		return false;
 	}
 	
-	public static boolean insertQuestion(String question, int categoryid) {
-    	HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(insertUrl);
-
+	public static boolean insertQuestionAndAnswer(String question, int categoryid, List<Answer> answers) {
+		final String URL = "http://frigg.hiof.no/webutv_h119/android/set.py?q=";
+		HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(URL);
+        
         try {
-        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(11);
             nameValuePairs.add(new BasicNameValuePair("q", "newquestion"));
             nameValuePairs.add(new BasicNameValuePair("categoryid", String.valueOf(categoryid)));
             nameValuePairs.add(new BasicNameValuePair("question", String.valueOf(question)));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-
-            if (httpResponse.getStatusLine().getStatusCode() == 200) {
-            	return true;
-            }
-
-        }catch (UnsupportedEncodingException e){
-            return false;
-        }catch (IOException e) {
-            return false;
-        }
-		return false;
-    }
-	
-	public static boolean insertAnswer(List<Answer> answers) {
-    	HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(insertUrl);//husk å sette inn URL som parameter her
-
-        try {
-        	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(9);
-            nameValuePairs.add(new BasicNameValuePair("q", "newanswer"));
             nameValuePairs.add(new BasicNameValuePair("ans1", String.valueOf(answers.get(0).getAnswer())));
-            nameValuePairs.add(new BasicNameValuePair("ans1corr", String.valueOf(answers.get(0).isAnwser())));
+            nameValuePairs.add(new BasicNameValuePair("ans1cor", String.valueOf(answers.get(0).isAnwser())));
             nameValuePairs.add(new BasicNameValuePair("ans2", String.valueOf(answers.get(1).getAnswer())));
-            nameValuePairs.add(new BasicNameValuePair("ans2corr", String.valueOf(answers.get(1).isAnwser())));
+            nameValuePairs.add(new BasicNameValuePair("ans2cor", String.valueOf(answers.get(1).isAnwser())));
             nameValuePairs.add(new BasicNameValuePair("ans3", String.valueOf(answers.get(2).getAnswer())));
-            nameValuePairs.add(new BasicNameValuePair("ans3corr", String.valueOf(answers.get(2).isAnwser())));
+            nameValuePairs.add(new BasicNameValuePair("ans3cor", String.valueOf(answers.get(2).isAnwser())));
             nameValuePairs.add(new BasicNameValuePair("ans4", String.valueOf(answers.get(3).getAnswer())));
-            nameValuePairs.add(new BasicNameValuePair("ans4corr", String.valueOf(answers.get(3).isAnwser())));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            nameValuePairs.add(new BasicNameValuePair("ans4cor", String.valueOf(answers.get(3).isAnwser())));
             
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
+
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            	System.out.println("WHAT? BUrde jo funka!!");
             	return true;
             }
+
         }catch (UnsupportedEncodingException e){
             return false;
         }catch (IOException e) {
@@ -192,15 +172,17 @@ public class HandleQuery {
     }
 	
 	public static boolean insertNewAdmin(String username, String password) {
+		final String URL = "http://frigg.hiof.no/webutv_h119/android/set.py?q=";
     	HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(insertUrl);//husk å sette inn URL som parameter her
+        HttpPost httpPost = new HttpPost(URL);
 
         try {
         	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
             nameValuePairs.add(new BasicNameValuePair("q", "newadmin"));
             nameValuePairs.add(new BasicNameValuePair("usrname", String.valueOf(username)));
             nameValuePairs.add(new BasicNameValuePair("passwrd", String.valueOf(password)));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
             
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
