@@ -173,6 +173,7 @@ public class QuizActivity extends ActionBarActivity {
 	@Override
 	public void onStop() {
 		super.onStop();
+		//TODO: Stopper aldri å sende om den er resumed
 		Intent reminderServiceIntent = new Intent(this, ReminderService.class);
 		startService(reminderServiceIntent);
 	}
