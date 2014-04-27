@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +44,8 @@ public class AdminActivity extends ActionBarActivity {
 	private static int categoryid;
 	private int correctAns = 0;
 	private ListView questionlist;
+	private ArrayAdapter questionArrayAdapter;
+	private int selectedQuestionId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +158,69 @@ public class AdminActivity extends ActionBarActivity {
 		
 		getSupportFragmentManager().beginTransaction().replace(R.id.container, new AdminLoggedInFragment()).commit();
 	}
+	
+	public void deleteQuestionsListViewLoaded(final List<Question> result) {
+		EditText inputSearch = (EditText) findViewById(R.id.edittext_admin_search);
+		
+		inputSearch.addTextChangedListener(new TextWatcher(){
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start,
+					int count, int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start,
+					int before, int count) {
+				questionArrayAdapter.getFilter().filter(s);
+				
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		questionlist.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					final int position, long id) {
+				selectedQuestionId = ((Question)parent.getItemAtPosition(position)).getQuestionid();
+				new AlertDialog.Builder(local)
+			    .setTitle("Delete question")
+			    .setMessage("Are you sure you want to delete this question?")
+			    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) { 
+			            // continue with delete
+			        	System.out.println(selectedQuestionId);
+			        	result.remove(position);
+			        	questionArrayAdapter.notifyDataSetChanged();
+		        		System.out.println("questionid"+selectedQuestionId);
+			        	Thread deleteQuestionFromDatabaseThread = new Thread(new Runnable() {
+			    			@Override
+			    			public void run() {
+			    				HandleQuery.deleteQuestion(selectedQuestionId);
+			    				System.out.println("Selected Questionid "+selectedQuestionId);
+			    			}
+			    		});
+			        	deleteQuestionFromDatabaseThread.start();
+			        }
+			     })
+			    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) { 
+			            // Do nothing
+			        }
+			     })
+			    .setIcon(android.R.drawable.ic_dialog_alert)
+			     .show();
+			}
+		});
+	}
 
 	private class CheckLoginInfo extends AsyncTask<String[], Void, Boolean>{
 
@@ -216,7 +283,13 @@ public class AdminActivity extends ActionBarActivity {
 	}
 	
 	public class DeleteQuestionsListView extends AsyncTask<Void, Void, List<Question>>{
-		private int selectedQuestionId;
+		private ProgressDialog Dialog = new ProgressDialog(local);
+
+		@Override
+		protected void onPreExecute() {
+			Dialog.setMessage("Getting questions..");
+			Dialog.show();
+		}
 		
 		@Override
 		protected List<Question> doInBackground(Void... params) {
@@ -236,48 +309,17 @@ public class AdminActivity extends ActionBarActivity {
 				questionlist = (ListView)findViewById(R.id.listview_admin_delete_question);
 				
 				// Create custom list adapter
-				final ArrayAdapter adapter = new ArrayAdapter(local, android.R.layout.simple_list_item_1, result);
+				questionArrayAdapter = new ArrayAdapter(local, android.R.layout.simple_list_item_1, result);
 				
 				// Set list adapter for the ListView
-				questionlist.setAdapter(adapter);
-				questionlist.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							final int position, long id) {
-						selectedQuestionId = ((Question)parent.getItemAtPosition(position)).getQuestionid();
-						new AlertDialog.Builder(local)
-					    .setTitle("Delete question")
-					    .setMessage("Are you sure you want to delete this question?")
-					    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-					        public void onClick(DialogInterface dialog, int which) { 
-					            // continue with delete
-					        	System.out.println(selectedQuestionId);
-					        	result.remove(position);
-				        		adapter.notifyDataSetChanged();
-				        		System.out.println("questionid"+selectedQuestionId);
-					        	Thread deleteQuestionFromDatabaseThread = new Thread(new Runnable() {
-					    			@Override
-					    			public void run() {
-					    				HandleQuery.deleteQuestion(selectedQuestionId);
-					    				System.out.println("Selected Questionid "+selectedQuestionId);
-					    			}
-					    		});
-					        	deleteQuestionFromDatabaseThread.start();
-					        }
-					     })
-					    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-					        public void onClick(DialogInterface dialog, int which) { 
-					            // Do nothing
-					        }
-					     })
-					    .setIcon(android.R.drawable.ic_dialog_alert)
-					     .show();
-					}
-				});
+				questionlist.setAdapter(questionArrayAdapter);
+				
+				deleteQuestionsListViewLoaded(result);
+				
 			}else{
 				Toast.makeText(AdminActivity.this, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
 			}
+			Dialog.hide();
 		}
 	}
 	
@@ -340,5 +382,4 @@ public class AdminActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
-
 }

@@ -7,9 +7,8 @@
         android:id="@+id/button_main_selectusername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="186dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/edittext_main_username"
         android:onClick="buttonUsernameSelectedClicked"
         android:text="@string/Start" />
 
@@ -17,15 +16,11 @@
         android:id="@+id/edittext_main_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/choose_username"
-        android:layout_alignBottom="@+id/button_main_selectusername"
-        android:gravity="center_horizontal"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="49dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:ems="10"
-        android:inputType="textPersonName" >
-
-        <requestFocus />
-    </EditText>
+        android:hint="@string/choose_username"
+        android:inputType="textPersonName" />
 
 </RelativeLayout>

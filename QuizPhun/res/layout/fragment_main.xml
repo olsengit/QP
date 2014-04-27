@@ -8,40 +8,34 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hiof.quizphun.MainActivity$PlaceholderFragment" >
 
-    <ImageView
-        android:id="@+id/imageview_main_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_launcher" />
-    
-    <TextView
-        android:id="@+id/textview_main_quizphun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/imageview_main_logo"
-        android:text="QuizPhun"
-        android:layout_marginTop="16dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    
-   	<com.facebook.widget.LoginButton
-   	   	 xmlns:fb="http://schemas.android.com/apk/res-auto"
-         android:id="@+id/authButton"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/button_main_usernamelogin"
-         android:layout_below="@+id/imageview_main_logo"
-         fb:login_text="@string/facebook_login_text" />
-    
-	<Button
-        android:id="@+id/button_main_usernamelogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:text="Username"
-        android:layout_below="@+id/authButton"
-        android:onClick="buttonLoginWithUsernameClicked" />
+	<com.facebook.widget.LoginButton
+	    xmlns:fb="http://schemas.android.com/apk/res-auto"
+	    android:id="@+id/authButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignTop="@+id/imageview_main_logo"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="118dp"
+	    fb:login_text="@string/facebook_login_text" />
 
+	<ImageView
+	    android:id="@+id/imageview_main_logo"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:scaleType="fitStart"
+	    android:src="@drawable/quizphun_logo" />
+
+	<Button
+	    android:id="@+id/button_main_usernamelogin"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/authButton"
+	    android:layout_alignRight="@+id/authButton"
+	    android:layout_below="@+id/authButton"
+	    android:layout_marginTop="41dp"
+	    android:onClick="buttonLoginWithUsernameClicked"
+	    android:text="Use playername" />
 
 </RelativeLayout>
