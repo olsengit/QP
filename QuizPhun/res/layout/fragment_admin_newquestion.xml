@@ -9,6 +9,10 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/edittext_admin_question"
         android:layout_below="@+id/textView1"
+        android:layout_toLeftOf="@+id/radiogroup_admin_correct_answer"
+        android:hint="First answer"
+        android:imeOptions="actionNext"
+        android:inputType="text"
         android:ems="10" />
 
     <EditText
@@ -17,6 +21,10 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/edittext_admin_answer1"
         android:layout_below="@+id/edittext_admin_answer1"
+        android:layout_toLeftOf="@+id/radiogroup_admin_correct_answer"
+        android:hint="Second answer"
+        android:imeOptions="actionNext"
+        android:inputType="text"
         android:ems="10" />
 
     <EditText
@@ -25,6 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/edittext_admin_answer2"
         android:layout_below="@+id/edittext_admin_answer2"
+        android:layout_toLeftOf="@+id/radiogroup_admin_correct_answer"
+        android:hint="Third answer"
+        android:imeOptions="actionNext"
+        android:inputType="text"
         android:ems="10" />
 
     <EditText
@@ -32,7 +44,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/edittext_admin_answer3"
+        android:layout_alignRight="@+id/edittext_admin_answer3"
         android:layout_below="@+id/edittext_admin_answer3"
+        android:hint="Fourth answer"
+        android:imeOptions="actionDone"
+        android:inputType="text"
         android:ems="10" />
 
     <TextView
@@ -56,13 +72,49 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/spinner_admin_newquestion_category"
         android:layout_marginTop="16dp"
+        android:imeOptions="actionNext"
+        android:inputType="text"
         android:ems="10"
         android:hint="Enter question" >
 
         <requestFocus />
     </EditText>
+
+    <RadioGroup
+        android:id="@+id/radiogroup_admin_correct_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edittext_admin_answer4"
+        android:layout_alignParentRight="true" >
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="18dp"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="18dp" />
+
+        <RadioButton
+            android:id="@+id/radio2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="18dp" />
+
+        <RadioButton
+            android:id="@+id/radio3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="18dp" />
+    </RadioGroup>
 
     <TextView
         android:id="@+id/textView1"
@@ -70,46 +122,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/edittext_admin_question"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="18dp"
         android:text="Enter 4 answers and the correct one" />
-
-    <RadioGroup
-        android:id="@+id/radiogroup_admin_correct_answer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/edittext_admin_answer4"
-        android:layout_toRightOf="@+id/textView1" >
-
-        <RadioButton
-            android:id="@+id/radio0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true" />
-
-        <RadioButton
-            android:id="@+id/radio1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <RadioButton
-            android:id="@+id/radio2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <RadioButton
-            android:id="@+id/radio3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RadioGroup>
 
     <Button
         android:id="@+id/button_admin_newquestu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/edittext_admin_answer4"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
-        android:text="Save"
-        android:onClick="buttonSaveQuestionClicked" />
+        android:layout_marginTop="18dp"
+        android:onClick="buttonSaveQuestionClicked"
+        android:text="Save question" />
 
 </RelativeLayout>

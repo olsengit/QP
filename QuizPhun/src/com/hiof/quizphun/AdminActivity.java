@@ -40,11 +40,10 @@ import com.hiof.objects.Question;
 public class AdminActivity extends ActionBarActivity {
 
 	private AdminActivity local;
-	private static Spinner categorySpinner;
+	private Spinner categorySpinner;
 	private static int categoryid;
-	private int correctAns = 0;
 	private ListView questionlist;
-	private ArrayAdapter questionArrayAdapter;
+	private ArrayAdapter<Question> questionArrayAdapter;
 	private int selectedQuestionId;
 
 	@Override
@@ -116,15 +115,9 @@ public class AdminActivity extends ActionBarActivity {
 		boolean ans4 = false;
 		
 		RadioGroup rg = ((RadioGroup)findViewById(R.id.radiogroup_admin_correct_answer));
+		int index = rg.indexOfChild(findViewById(rg.getCheckedRadioButtonId()));
 		
-		rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				correctAns = checkedId;
-			}
-		});
-		switch(correctAns){
+		switch(index){
 			case 0:
 				ans1 = true;
 				break;
@@ -154,9 +147,13 @@ public class AdminActivity extends ActionBarActivity {
 				HandleQuery.insertQuestionAndAnswer(question, catid, answers);
 			}
 		});
-		insertQuestionToDatabaseThread.start();
-		
-		getSupportFragmentManager().beginTransaction().replace(R.id.container, new AdminLoggedInFragment()).commit();
+		if(question.length()>5 && answer1.length()>1 && answer2.length()>1 && answer3.length()>1 && answer4.length()>1){
+			insertQuestionToDatabaseThread.start();
+			Toast.makeText(local, "Done", Toast.LENGTH_SHORT).show();
+			getSupportFragmentManager().beginTransaction().replace(R.id.container, new AdminLoggedInFragment()).commit();
+		}else{
+			Toast.makeText(local, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	public void deleteQuestionsListViewLoaded(final List<Question> result) {
@@ -309,7 +306,7 @@ public class AdminActivity extends ActionBarActivity {
 				questionlist = (ListView)findViewById(R.id.listview_admin_delete_question);
 				
 				// Create custom list adapter
-				questionArrayAdapter = new ArrayAdapter(local, android.R.layout.simple_list_item_1, result);
+				questionArrayAdapter = new ArrayAdapter<Question>(local, android.R.layout.simple_list_item_1, result);
 				
 				// Set list adapter for the ListView
 				questionlist.setAdapter(questionArrayAdapter);

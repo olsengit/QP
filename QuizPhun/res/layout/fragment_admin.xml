@@ -17,6 +17,7 @@
         android:layout_alignParentTop="true"
         android:ems="10"
         android:hint="Username"
+        android:imeOptions="actionNext"
         android:inputType="textPersonName" />
 
     <EditText
