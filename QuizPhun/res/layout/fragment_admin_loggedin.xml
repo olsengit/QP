@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp"
-        android:onClick="newQuestionClicked"
+        android:onClick="buttonNewQuestionClicked"
         android:text="New question" />
 
     <Button
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_admin_newquestion"
         android:layout_centerHorizontal="true"
-        android:onClick="newAccountClicked"
+        android:onClick="buttonDeleteQuestionClicked"
         android:text="Delete question" />
 
 </RelativeLayout>

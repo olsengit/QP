@@ -3,7 +3,9 @@ package com.hiof.quizphun;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,16 +20,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import com.hiof.adapter.CustomCategoryAdapter;
 import com.hiof.database.HandleQuery;
 import com.hiof.objects.Answer;
 import com.hiof.objects.Category;
+import com.hiof.objects.Question;
  
 public class AdminActivity extends ActionBarActivity {
 
@@ -35,6 +41,7 @@ public class AdminActivity extends ActionBarActivity {
 	private static Spinner categorySpinner;
 	private static int categoryid;
 	private int correctAns = 0;
+	private ListView questionlist;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +85,16 @@ public class AdminActivity extends ActionBarActivity {
 		new CheckLoginInfo().execute(values);
 	}
 	
-	public void newQuestionClicked(View v){
+	public void buttonNewQuestionClicked(View v){
 		getSupportFragmentManager().beginTransaction()
 		.replace(R.id.container, new NewQuestionFragment()).addToBackStack(null).commit();
 		new FillCategorySpinner().execute();
+	}
+	
+	public void buttonDeleteQuestionClicked(View v){
+		getSupportFragmentManager().beginTransaction()
+		.replace(R.id.container, new DeleteQuestionFragment()).addToBackStack(null).commit();
+		new DeleteQuestionsListView().execute();
 	}
 
 	
@@ -202,6 +215,72 @@ public class AdminActivity extends ActionBarActivity {
 		}
 	}
 	
+	public class DeleteQuestionsListView extends AsyncTask<Void, Void, List<Question>>{
+		private int selectedQuestionId;
+		
+		@Override
+		protected List<Question> doInBackground(Void... params) {
+			List<Question> questions;
+			try {
+				questions = HandleQuery.getAllQuestions();
+				return questions;
+			} catch (NullPointerException e) {
+				return null;
+			}
+		}
+		
+		@Override
+		protected void onPostExecute(final List<Question> result){
+			if(result!=null){
+				// Get ListView
+				questionlist = (ListView)findViewById(R.id.listview_admin_delete_question);
+				
+				// Create custom list adapter
+				final ArrayAdapter adapter = new ArrayAdapter(local, android.R.layout.simple_list_item_1, result);
+				
+				// Set list adapter for the ListView
+				questionlist.setAdapter(adapter);
+				questionlist.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							final int position, long id) {
+						selectedQuestionId = ((Question)parent.getItemAtPosition(position)).getQuestionid();
+						new AlertDialog.Builder(local)
+					    .setTitle("Delete question")
+					    .setMessage("Are you sure you want to delete this question?")
+					    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					        public void onClick(DialogInterface dialog, int which) { 
+					            // continue with delete
+					        	System.out.println(selectedQuestionId);
+					        	result.remove(position);
+				        		adapter.notifyDataSetChanged();
+				        		System.out.println("questionid"+selectedQuestionId);
+					        	Thread deleteQuestionFromDatabaseThread = new Thread(new Runnable() {
+					    			@Override
+					    			public void run() {
+					    				HandleQuery.deleteQuestion(selectedQuestionId);
+					    				System.out.println("Selected Questionid "+selectedQuestionId);
+					    			}
+					    		});
+					        	deleteQuestionFromDatabaseThread.start();
+					        }
+					     })
+					    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+					        public void onClick(DialogInterface dialog, int which) { 
+					            // Do nothing
+					        }
+					     })
+					    .setIcon(android.R.drawable.ic_dialog_alert)
+					     .show();
+					}
+				});
+			}else{
+				Toast.makeText(AdminActivity.this, "Something went wrong loading data", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	
 	/**
 	 * A fragment for adding new questions to database
 	 */
@@ -215,6 +294,21 @@ public class AdminActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
+	
+	/**
+	 * A fragment for deleting questions from database
+	 */
+	public static class DeleteQuestionFragment extends Fragment{
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_admin_delete_question,
+					container, false);
+			return rootView;
+		}
+	}
+	
 	
 	
 	/**

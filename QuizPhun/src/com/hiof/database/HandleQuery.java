@@ -63,6 +63,26 @@ public class HandleQuery {
 		}
 		return questions;
 	}
+	
+	public static List<Question> getAllQuestions() {
+		List<Question> questions = new ArrayList<Question>();
+
+		try {
+			String urlQuestion = "http://frigg.hiof.no/webutv_h119/android/get.py?q=allquestions";
+			JSONArray questionArray = new JsonParser().getJsonArray(urlQuestion);
+			for (int i = 0; i < questionArray.length(); i++) {
+				JSONObject qobj;
+				qobj = questionArray.getJSONObject(i);
+				int questionid = qobj.getInt("questionid");
+				int categoryid = qobj.getInt("categoryid");
+				String question = qobj.getString("questiontext");
+				questions.add(new Question(questionid, categoryid, question));
+			}
+		} catch (JSONException e) {
+			return null;
+		}
+		return questions;
+	}
 
 	public static List<Answer> getAnswers(int questionid) {
 		String urlAnswer = "http://frigg.hiof.no/webutv_h119/android/get.py?q=answer&questionid="+ questionid;
@@ -232,9 +252,10 @@ public class HandleQuery {
         	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("q", "deletequestion"));
             nameValuePairs.add(new BasicNameValuePair("questionid", String.valueOf(questionid)));
-            
+            System.out.println(URL+"deletequestion"+ "&questionid="+String.valueOf(questionid));
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "utf-8"));
             HttpResponse httpResponse = httpClient.execute(httpPost);
+            System.out.println(httpPost.toString());
 
             if (httpResponse.getStatusLine().getStatusCode() == 200) {
             	return true;
