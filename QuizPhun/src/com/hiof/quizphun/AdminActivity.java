@@ -157,8 +157,8 @@ public class AdminActivity extends ActionBarActivity {
 	}
 	
 	public void deleteQuestionsListViewLoaded(final List<Question> result) {
-		EditText inputSearch = (EditText) findViewById(R.id.edittext_admin_search);
-		
+		final EditText inputSearch = (EditText) findViewById(R.id.edittext_admin_search);
+
 		inputSearch.addTextChangedListener(new TextWatcher(){
 
 			@Override
@@ -172,7 +172,6 @@ public class AdminActivity extends ActionBarActivity {
 			public void onTextChanged(CharSequence s, int start,
 					int before, int count) {
 				questionArrayAdapter.getFilter().filter(s);
-				
 			}
 
 			@Override
@@ -185,8 +184,8 @@ public class AdminActivity extends ActionBarActivity {
 		questionlist.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					final int position, long id) {
+			public void onItemClick(final AdapterView<?> parent, View view,
+					final int position, final long id) {
 				selectedQuestionId = ((Question)parent.getItemAtPosition(position)).getQuestionid();
 				new AlertDialog.Builder(local)
 			    .setTitle("Delete question")
@@ -194,15 +193,14 @@ public class AdminActivity extends ActionBarActivity {
 			    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 			        public void onClick(DialogInterface dialog, int which) { 
 			            // continue with delete
-			        	System.out.println(selectedQuestionId);
-			        	result.remove(position);
+			        	questionArrayAdapter.remove(questionArrayAdapter.getItem(position));
+			        	questionArrayAdapter.getFilter().filter("");
+			        	inputSearch.setText("");
 			        	questionArrayAdapter.notifyDataSetChanged();
-		        		System.out.println("questionid"+selectedQuestionId);
 			        	Thread deleteQuestionFromDatabaseThread = new Thread(new Runnable() {
 			    			@Override
 			    			public void run() {
 			    				HandleQuery.deleteQuestion(selectedQuestionId);
-			    				System.out.println("Selected Questionid "+selectedQuestionId);
 			    			}
 			    		});
 			        	deleteQuestionFromDatabaseThread.start();
