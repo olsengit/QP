@@ -27,7 +27,9 @@ import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.hiof.adapter.CustomCategoryAdapter;
 import com.hiof.database.HandleQuery;
+import com.hiof.database.SqliteDatabaseHandler;
 import com.hiof.objects.Category;
+import com.hiof.objects.User;
 
 public class CategoryActivity extends ActionBarActivity {
 	
@@ -56,7 +58,10 @@ public class CategoryActivity extends ActionBarActivity {
 				makeMeRequest(session);
 			}
 			else {
-				userName = getIntent().getStringExtra("USERNAME");
+				SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
+				List<User> users = db.getAllUsers();
+				User lastUserAdded = users.get(users.size()-1);
+				userName = lastUserAdded.getUserName();
 			}
 		}catch(NullPointerException e){
 			System.out.println("Session i category , ingen facebook session");

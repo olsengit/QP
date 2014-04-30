@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.hiof.database.SqliteDatabaseHandler;
+import com.hiof.objects.User;
 
 public class MainActivity extends ActionBarActivity {
 	
@@ -162,8 +164,8 @@ public class MainActivity extends ActionBarActivity {
 			Toast.makeText(getApplicationContext(), "Username can`t contains 0 or more than 12 letters", Toast.LENGTH_SHORT).show();
 		}
 		else {
-			System.out.println("USERNAME " +username);
-			i.putExtra("USERNAME", username);
+			SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
+			db.addUser(new User(username));
 			startActivity(i);
 		}
 	}
