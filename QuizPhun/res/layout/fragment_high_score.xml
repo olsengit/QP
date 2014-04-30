@@ -12,7 +12,7 @@
 	    android:id="@+id/listview_highscores"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:dividerHeight="20dp"
+	    android:dividerHeight="3dp"
 	    android:layout_marginTop="20dp" >
     </ListView>
 	

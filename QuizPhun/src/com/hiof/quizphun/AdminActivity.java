@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager.BackStackEntry;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,7 +32,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-
 import com.hiof.adapter.CustomCategoryAdapter;
 import com.hiof.database.HandleQuery;
 import com.hiof.objects.Answer;
@@ -53,7 +54,7 @@ public class AdminActivity extends ActionBarActivity {
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new AdminLoginFragment()).commit();
+					.add(R.id.container, new AdminLoginFragment()).addToBackStack("Login").commit();
 		} 
 		local = this;
 	} 
@@ -81,6 +82,19 @@ public class AdminActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+		int stackCount = fm.getBackStackEntryCount();
+		System.out.println("Stack : " + stackCount);
+		if(stackCount >= 2) {
+			Fragment f = new AdminLoggedInFragment();
+			fm.beginTransaction().replace(R.id.container, f).addToBackStack("Logged in").commit();
+		}
+	}
+
+
 	public void buttonLogInClicked(View v){
 		EditText username = (EditText)findViewById(R.id.edittext_admin_username);
 		EditText password = (EditText)findViewById(R.id.edittext_admin_password);
@@ -90,13 +104,13 @@ public class AdminActivity extends ActionBarActivity {
 	
 	public void buttonNewQuestionClicked(View v){
 		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.container, new NewQuestionFragment()).addToBackStack(null).commit();
+		.replace(R.id.container, new NewQuestionFragment()).addToBackStack("New Question").commit();
 		new FillCategorySpinner().execute();
 	}
 	
 	public void buttonDeleteQuestionClicked(View v){
 		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.container, new DeleteQuestionFragment()).addToBackStack(null).commit();
+		.replace(R.id.container, new DeleteQuestionFragment()).addToBackStack("Delete Question").commit();
 		new DeleteQuestionsListView().execute();
 	}
 
@@ -150,7 +164,7 @@ public class AdminActivity extends ActionBarActivity {
 		if(question.length()>5 && answer1.length()>1 && answer2.length()>1 && answer3.length()>1 && answer4.length()>1){
 			insertQuestionToDatabaseThread.start();
 			Toast.makeText(local, "Done", Toast.LENGTH_SHORT).show();
-			getSupportFragmentManager().beginTransaction().replace(R.id.container, new AdminLoggedInFragment()).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.container, new AdminLoggedInFragment()).addToBackStack("Logged in").commit();
 		}else{
 			Toast.makeText(local, "Please fill in all fields", Toast.LENGTH_SHORT).show();
 		}
@@ -243,7 +257,7 @@ public class AdminActivity extends ActionBarActivity {
 		protected void onPostExecute(Boolean result) {
 			if(result == true){
 				getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, new AdminLoggedInFragment()).addToBackStack(null).commit();
+				.replace(R.id.container, new AdminLoggedInFragment()).addToBackStack("Logged in").commit();
 			}else{
 				Toast.makeText(local, "Incorrect login", Toast.LENGTH_SHORT).show();
 			}

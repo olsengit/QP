@@ -60,8 +60,10 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 	private LocationManager locationManager;
 	private String provider, city, categoryname;
 	private Location location;
-
-	@Override
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 200; // 200 meters before it asks for updates
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 5; // 5 minutes before it asks for updates
+    
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quiz);
@@ -75,7 +77,6 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 		setTitle(categoryname);
 		System.out.println("Point reset");
 		System.out.println("LifeCycle onCreate");
-		points = 0;
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		Criteria criteria = new Criteria();
 	    provider = locationManager.getBestProvider(criteria, false);
@@ -86,6 +87,7 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 	protected void onResume() {
 		super.onResume();
 		locationManager.requestLocationUpdates(provider, 400, 1, this);
+		points = 0;
 		new prepareTenQuestions().execute();
 	}
 	
@@ -133,7 +135,12 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 			getGpsLocation();
 			convertGpsLocToCity();
 			playerName = getIntent().getStringExtra("USERNAME");
-			locationString = city;
+			if(location != null) {
+				locationString = city;
+			}
+			else {
+				locationString = "Unknown";
+			}
 			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();
 			Thread insertHighscoreThread = new Thread(new Runnable() {
 	            @Override
@@ -157,21 +164,55 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 		    city = addresses.get(0).getLocality();
 	}
 
-	private void getGpsLocation() {
-		boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		if(!gpsEnabled) {
-			Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-			startActivity(intent);
-		}
+	private Location getGpsLocation() {
+		//http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial/
+		try {
+		    boolean isGPSEnabled = false;
+		    boolean isNetworkEnabled = false;
+		    boolean canGetLocation = false;
+            locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+ 
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+ 
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+ 
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                // no network provider is enabled
+            } else {
+                canGetLocation = true;
+                if (isNetworkEnabled) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,MIN_TIME_BW_UPDATES,MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
-	    if (location != null) {
-	        onLocationChanged(location);
-	    } 
-	    else {
-	    	Toast.makeText(this, "Cant get location", Toast.LENGTH_SHORT).show();
-	    }
-	    
-	}
+                    if (locationManager != null) {
+                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                            lat = location.getLatitude();
+                            lon = location.getLongitude();
+                        }
+                    }
+                }
+                
+                if (isGPSEnabled) {
+                    if (location == null) {
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME_BW_UPDATES,MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+                                lat = location.getLatitude();
+                                lon = location.getLongitude();
+                            }
+                        }
+                    }
+                }
+            }
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+ 
+        return location;
+    }
 
 	public void nextQuestionClicked(View v){
 		startQuiz();
