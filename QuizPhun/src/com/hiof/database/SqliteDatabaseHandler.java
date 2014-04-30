@@ -24,6 +24,7 @@ public class SqliteDatabaseHandler extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    //http://www.androidhive.info/2011/11/android-sqlite-database-tutorial/
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USERNAME_TABLE = "CREATE TABLE " + TABLE_USERNAME + "("
