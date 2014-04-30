@@ -1,7 +1,13 @@
 package com.hiof.quizphun;
 
+import java.util.List;
+
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -9,16 +15,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.hiof.adapter.CustomHighscoreAdapter;
+import com.hiof.adapter.CustomUserAdapter;
+import com.hiof.database.HandleQuery;
 import com.hiof.database.SqliteDatabaseHandler;
+import com.hiof.objects.Highscore;
+import com.hiof.objects.Question;
 import com.hiof.objects.User;
 
 public class MainActivity extends ActionBarActivity {
+	
+	public static MainActivity local;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +49,8 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}		
+		
+		local = this;
 		
 		/*
 		// ---- GET HASH KEY FOR FACEBOOK ------
@@ -169,6 +188,37 @@ public class MainActivity extends ActionBarActivity {
 			startActivity(i);
 		}
 	}
+	
+	public void buttonUsernameSelectFromListClicked(View v){
+		getSupportFragmentManager().beginTransaction()
+		.replace(R.id.container, new ChooseUsernameFromListFragment()).addToBackStack(null).commit();
+	}
+	
+	public void fuck2() {
+		ListView userItems = (ListView) findViewById(R.id.listview_users);
+		
+		SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
+		List<User> users = db.getAllUsers();
+		// Create custom list adapter
+		CustomUserAdapter adapter = new CustomUserAdapter(local, users);
+		
+		// Set list adapter for the ListView
+		userItems.setAdapter(adapter);
+		userItems.setEnabled(true);
+		userItems.setOnItemClickListener(new OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				System.out.println("Clicked");
+				/*System.out.println("Clicked "+users.get(position));
+				System.out.println("Clicked "+parent.getChildAt(position));
+				System.out.println("Clicked "+adapter.getItem(position));
+				parent.getChildAt(position).setBackgroundColor(Color.GREEN);
+				userItems.getChildAt(2).setBackgroundColor(Color.GREEN);*/
+			}
+		});
+	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -202,6 +252,61 @@ public class MainActivity extends ActionBarActivity {
 					false);
 			return rootView;
 		}
+	}
+	
+	public static class ChooseUsernameFromListFragment extends Fragment {
+
+		public ChooseUsernameFromListFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main_choose_username_from_list, container,
+					false);
+			return rootView;
+		}
+		@Override
+		public void onResume() {
+			super.onResume();
+			fillUserList();
+		}
+		
+		private void fillUserList() {
+			ListView userItems = (ListView) getActivity().findViewById(R.id.listview_users);
+			
+			SqliteDatabaseHandler db = new SqliteDatabaseHandler(getActivity());
+			List<User> users = db.getAllUsers();
+			// Create custom list adapter
+			CustomUserAdapter adapter = new CustomUserAdapter(local, users);
+			
+			// Set list adapter for the ListView
+			userItems.setAdapter(adapter);
+			userItems.setEnabled(true);
+			/*userItems.setOnItemClickListener(new OnItemClickListener() {
+				
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					System.out.println("Clicked");
+					System.out.println("Clicked "+users.get(position));
+					System.out.println("Clicked "+parent.getChildAt(position));
+					System.out.println("Clicked "+adapter.getItem(position));
+					parent.getChildAt(position).setBackgroundColor(Color.GREEN);
+					userItems.getChildAt(2).setBackgroundColor(Color.GREEN);
+				}
+			});*/
+			//code to get the listView instance using findViewByID etc
+
+			userItems.setOnItemClickListener(new OnItemClickListener()
+			{
+			    @Override public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+			    { 
+			        Toast.makeText(getActivity(), "Stop Clicking me", Toast.LENGTH_SHORT).show();
+			    }
+			});
+		}
+		
 	}
 
 }

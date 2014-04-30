@@ -1,0 +1,35 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="6dip" >
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        
+		<TextView
+	        android:id="@+id/textview_username_id"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="left|center_vertical"
+	        android:text="id"
+	        android:layout_marginLeft="5sp"
+	        android:textSize="20sp"
+	        android:textStyle="bold" />
+        
+	    <TextView
+	        android:id="@+id/textview_username"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="left|center_vertical"
+	        android:text="username"
+	        android:layout_marginLeft="5sp"
+	        android:layout_toRightOf="@+id/textview_username_id"
+	        android:textSize="20sp"
+	        android:textStyle="bold" />
+    
+	</RelativeLayout>
+
+</ScrollView>
