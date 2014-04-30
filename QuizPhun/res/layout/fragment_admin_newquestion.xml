@@ -123,7 +123,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/edittext_admin_question"
         android:layout_marginTop="18dp"
-        android:text="Enter 4 answers and the correct one" />
+        android:text="Enter 4 answers and select the correct one" />
 
     <Button
         android:id="@+id/button_admin_newquestu"
