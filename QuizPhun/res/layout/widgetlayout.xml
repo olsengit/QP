@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/widget_background"
+    android:layout_gravity="center" >
+    
+    <ImageButton
+        android:id="@+id/widget_button"
+        android:layout_width="162dp"
+        android:layout_height="58dp"
+        android:layout_gravity="center"
+        android:background="@drawable/quizphun_logo" />
+
+</LinearLayout>
