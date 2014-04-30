@@ -49,6 +49,7 @@ public class CategoryActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		String intentUserName = getIntent().getStringExtra("USERNAME");
 		setTitle("Select category");
 		local = this;
 		try{
@@ -56,6 +57,9 @@ public class CategoryActivity extends ActionBarActivity {
 			System.out.println("Session i category" + session.toString());
 			if(session != null && session.isOpened()){
 				makeMeRequest(session);
+			}
+			else if(!intentUserName.isEmpty()) {
+				userName = intentUserName;
 			}
 			else {
 				SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);

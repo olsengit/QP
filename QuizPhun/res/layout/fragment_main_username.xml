@@ -34,7 +34,7 @@
         android:layout_below="@+id/button_main_selectusername"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:onClick="buttonUsernameSelectFromListClicked"
         android:text="@string/choose_from_list" />
 

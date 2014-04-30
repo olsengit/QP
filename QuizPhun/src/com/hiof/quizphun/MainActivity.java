@@ -79,9 +79,6 @@ public class MainActivity extends ActionBarActivity {
 	    super.onActivityResult(requestCode, resultCode, data);
 	    uiHelper.onActivityResult(requestCode, resultCode, data);
 	}
-	//facebook-stuff start
-	
-	
 	
 	@Override
 	public void onResume() {
@@ -144,8 +141,6 @@ public class MainActivity extends ActionBarActivity {
 	        onSessionStateChange(session, state, exception);
 	    }
 	};
-	
-	//facebook-stuff end
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -273,37 +268,26 @@ public class MainActivity extends ActionBarActivity {
 		}
 		
 		private void fillUserList() {
-			ListView userItems = (ListView) getActivity().findViewById(R.id.listview_users);
+			final ListView userItems = (ListView) getView().findViewById(R.id.listview_users);
 			
 			SqliteDatabaseHandler db = new SqliteDatabaseHandler(getActivity());
-			List<User> users = db.getAllUsers();
+			final List<User> users = db.getAllUsers();
 			// Create custom list adapter
-			CustomUserAdapter adapter = new CustomUserAdapter(local, users);
+			final CustomUserAdapter adapter = new CustomUserAdapter(getActivity(), users);
 			
 			// Set list adapter for the ListView
 			userItems.setAdapter(adapter);
 			userItems.setEnabled(true);
-			/*userItems.setOnItemClickListener(new OnItemClickListener() {
+			userItems.setOnItemClickListener(new OnItemClickListener() {
 				
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
-					System.out.println("Clicked");
-					System.out.println("Clicked "+users.get(position));
-					System.out.println("Clicked "+parent.getChildAt(position));
-					System.out.println("Clicked "+adapter.getItem(position));
-					parent.getChildAt(position).setBackgroundColor(Color.GREEN);
-					userItems.getChildAt(2).setBackgroundColor(Color.GREEN);
+					String userName = users.get(position).getUserName();
+					Intent i = new Intent(getActivity(), CategoryActivity.class);
+					i.putExtra("USERNAME", userName);
+					startActivity(i);
 				}
-			});*/
-			//code to get the listView instance using findViewByID etc
-
-			userItems.setOnItemClickListener(new OnItemClickListener()
-			{
-			    @Override public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
-			    { 
-			        Toast.makeText(getActivity(), "Stop Clicking me", Toast.LENGTH_SHORT).show();
-			    }
 			});
 		}
 		
