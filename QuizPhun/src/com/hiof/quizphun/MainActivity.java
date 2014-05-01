@@ -25,117 +25,102 @@ import com.hiof.database.SqliteDatabaseHandler;
 import com.hiof.objects.User;
 
 public class MainActivity extends ActionBarActivity {
-	
+
 	public static MainActivity local;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
-		}		
-		
-		local = this;
-		
-		/*
-		// ---- GET HASH KEY FOR FACEBOOK ------
-		PackageInfo info = null;
-		try {
-			info = getPackageManager().getPackageInfo("com.hiof.quizphun",  PackageManager.GET_SIGNATURES);
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
 		}
 
-		for (Signature signature : info.signatures)
-		    {
-		        MessageDigest md = null;
-				try {
-					md = MessageDigest.getInstance("SHA");
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-				}
-		        md.update(signature.toByteArray());
-		        Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-		    }
-		*/
+		local = this;
 	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    super.onActivityResult(requestCode, resultCode, data);
-	    uiHelper.onActivityResult(requestCode, resultCode, data);
+		super.onActivityResult(requestCode, resultCode, data);
+		uiHelper.onActivityResult(requestCode, resultCode, data);
 	}
-	
+
 	@Override
 	public void onResume() {
-	    super.onResume();
-	    uiHelper.onResume();
+		super.onResume();
+		uiHelper.onResume();
 	}
 
 	@Override
 	public void onPause() {
-	    super.onPause();
-	    uiHelper.onPause();
+		super.onPause();
+		uiHelper.onPause();
 	}
 
 	@Override
 	public void onDestroy() {
-	    super.onDestroy();
-	    uiHelper.onDestroy();
+		super.onDestroy();
+		uiHelper.onDestroy();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-	    super.onSaveInstanceState(outState);
-	    uiHelper.onSaveInstanceState(outState);
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
 	}
-	
-	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-        if (state.isOpened()) {
-        	System.out.println("Session - navigerer til category" + session.toString());
-        	Intent i = new Intent(this, CategoryActivity.class);
-    		startActivity(i);
-        } else if (state.isClosed()) {
-        	System.out.println("Ingen session - navigerer ikke");
+
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception) {
+		// If a sessionstate from facebook is opened, we send the user to the
+		// categoryactivity
+		if (state.isOpened()) {
+			Intent i = new Intent(this, CategoryActivity.class);
+			startActivity(i);
+		}
+		// If there is no state we add the fragment
+		else if (state.isClosed()) {
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.container, new PlaceholderFragment()).addToBackStack(null).commit();
-        }
+					.replace(R.id.container, new PlaceholderFragment())
+					.addToBackStack(null).commit();
+		}
 	}
-	
+
 	@Override
 	protected void onResumeFragments() {
-	    super.onResumeFragments();
-	    Session session = Session.getActiveSession();
-
-	    if (session != null && session.isOpened()) {
-	    	System.out.println("Session resumed" + session.toString());
-	    	Intent i = new Intent(this, CategoryActivity.class);
-    		startActivity(i);
-	    } else {
-	    	System.out.println("Session not resumed" + session.toString());
+		super.onResumeFragments();
+		// Get the session when app is resumed
+		Session session = Session.getActiveSession();
+		// If the session is opened, navigate to the categoryactivity
+		if (session != null && session.isOpened()) {
+			System.out.println("Session resumed" + session.toString());
+			Intent i = new Intent(this, CategoryActivity.class);
+			startActivity(i);
+		}
+		// Else add the fragment
+		else {
+			System.out.println("Session not resumed" + session.toString());
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.container, new PlaceholderFragment()).addToBackStack(null).commit();
-	    }
+					.replace(R.id.container, new PlaceholderFragment())
+					.addToBackStack(null).commit();
+		}
 	}
-	
+
 	private UiLifecycleHelper uiHelper;
-	private Session.StatusCallback callback = 
-	    new Session.StatusCallback() {
-	    @Override
-	    public void call(Session session, 
-	            SessionState state, Exception exception) {
-	        onSessionStateChange(session, state, exception);
-	    }
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state,
+				Exception exception) {
+			onSessionStateChange(session, state, exception);
+		}
 	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
@@ -153,57 +138,46 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	public void buttonLoginWithUsernameClicked(View v){
-		//Show login with username fragment
+
+	/*
+	 * Invoked when the login with username button is clicked
+	 */
+	public void buttonLoginWithUsernameClicked(View v) {
+		// Show login with username fragment
 		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.container, new PlayWithUsernameFragment()).addToBackStack(null).commit();
+				.replace(R.id.container, new PlayWithUsernameFragment())
+				.addToBackStack(null).commit();
 	}
-	
-	public void buttonUsernameSelectedClicked(View v){
-		//Send user to CategoryActivity
+
+	/*
+	 * Invoked when the user start the quiz.
+	 */
+	public void buttonUsernameSelectedClicked(View v) {
+		// Validates the length of the username
 		Intent i = new Intent(this, CategoryActivity.class);
-		EditText usernameEditText = (EditText)findViewById(R.id.edittext_main_username);
+		EditText usernameEditText = (EditText) findViewById(R.id.edittext_main_username);
 		String username = usernameEditText.getText().toString().trim();
-		if(username.length() == 0 || username.length() > 12) {
-			Toast.makeText(getApplicationContext(), "Username can`t contains 0 or more than 12 letters", Toast.LENGTH_SHORT).show();
+		if (username.length() == 0 || username.length() > 12) {
+			Toast.makeText(getApplicationContext(),
+					"Username can`t contains 0 or more than 12 letters",
+					Toast.LENGTH_SHORT).show();
 		}
+		// If the username is ok, add the user to the SQLite database and send
+		// user to the categoryactivity
 		else {
 			SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
 			db.addUser(new User(username));
 			startActivity(i);
 		}
 	}
-	
-	public void buttonUsernameSelectFromListClicked(View v){
+
+	/*
+	 * Invoked when user wanna select a username from the list
+	 */
+	public void buttonUsernameSelectFromListClicked(View v) {
 		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.container, new ChooseUsernameFromListFragment()).addToBackStack(null).commit();
-	}
-	
-	public void fuck2() {
-		ListView userItems = (ListView) findViewById(R.id.listview_users);
-		
-		SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
-		List<User> users = db.getAllUsers();
-		// Create custom list adapter
-		CustomUserAdapter adapter = new CustomUserAdapter(local, users);
-		
-		// Set list adapter for the ListView
-		userItems.setAdapter(adapter);
-		userItems.setEnabled(true);
-		userItems.setOnItemClickListener(new OnItemClickListener() {
-			
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				System.out.println("Clicked");
-				/*System.out.println("Clicked "+users.get(position));
-				System.out.println("Clicked "+parent.getChildAt(position));
-				System.out.println("Clicked "+adapter.getItem(position));
-				parent.getChildAt(position).setBackgroundColor(Color.GREEN);
-				userItems.getChildAt(2).setBackgroundColor(Color.GREEN);*/
-			}
-		});
+				.replace(R.id.container, new ChooseUsernameFromListFragment())
+				.addToBackStack(null).commit();
 	}
 
 	/**
@@ -222,7 +196,7 @@ public class MainActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
-	
+
 	/**
 	 * Fragment containing view to select a username
 	 */
@@ -234,12 +208,15 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_username, container,
-					false);
+			View rootView = inflater.inflate(R.layout.fragment_main_username,
+					container, false);
 			return rootView;
 		}
 	}
-	
+
+	/**
+	 * Fragment containing view to choose username from a list
+	 */
 	public static class ChooseUsernameFromListFragment extends Fragment {
 
 		public ChooseUsernameFromListFragment() {
@@ -248,32 +225,42 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_choose_username_from_list, container,
-					false);
+			View rootView = inflater.inflate(
+					R.layout.fragment_main_choose_username_from_list,
+					container, false);
 			return rootView;
 		}
+
 		@Override
 		public void onResume() {
 			super.onResume();
+			// Fills the list when the fragment is resumed
 			fillUserList();
 		}
-		
+
+		/*
+		 * Fills the usernames from SQLite to the listview
+		 */
 		private void fillUserList() {
-			final ListView userItems = (ListView) getView().findViewById(R.id.listview_users);
-			
+			final ListView userItems = (ListView) getView().findViewById(
+					R.id.listview_users);
+
 			SqliteDatabaseHandler db = new SqliteDatabaseHandler(getActivity());
 			final List<User> users = db.getAllUsers();
 			// Create custom list adapter
-			final CustomUserAdapter adapter = new CustomUserAdapter(getActivity(), users);
-			
+			final CustomUserAdapter adapter = new CustomUserAdapter(
+					getActivity(), users);
+
 			// Set list adapter for the ListView
 			userItems.setAdapter(adapter);
 			userItems.setEnabled(true);
 			userItems.setOnItemClickListener(new OnItemClickListener() {
-				
+
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
+					// Gets the position of the item clicked in the listview,
+					// and sends the user to the categoryactivity
 					String userName = users.get(position).getUserName();
 					Intent i = new Intent(getActivity(), CategoryActivity.class);
 					i.putExtra("USERNAME", userName);
@@ -281,7 +268,7 @@ public class MainActivity extends ActionBarActivity {
 				}
 			});
 		}
-		
+
 	}
 
 }

@@ -31,16 +31,18 @@ public class ReminderService extends IntentService {
 	}
 	
 	/*
-	 * Remind user to play if x minutes has passed since the user played
+	 * Remind user to play if 1440000 minutes has passed since the user played
 	 * A notification message will be sent
 	 */
 	private void RemindUser() {
 		reminderThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				//Intent invoked when user press the notification
 				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 				PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 				
+				//Makes a notification
 				Notification n = new NotificationCompat.Builder(getApplicationContext()) 
 				.setContentTitle("QuizPhun")
 				.setContentText("You haven't played for 24 hours, come play")
@@ -53,7 +55,8 @@ public class ReminderService extends IntentService {
 			}
 		});
 		try {
-			reminderThread.sleep(1440000);//Asleep for 24 hours
+			//Sleep thread for 24 hours
+			reminderThread.sleep(1440000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

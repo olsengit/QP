@@ -2,23 +2,27 @@ package com.hiof.objects;
 
 import java.io.Serializable;
 
-public class Highscore implements Serializable{
+public class Highscore implements Serializable {
 
+	// Fields
 	private static final long serialVersionUID = 1L;
 	private int position;
 	private String playername;
 	private int points;
 	private String location;
 	private String date;
-	
-	public Highscore(int position, String playername, int points, String location, String date) {
+
+	// Constructor
+	public Highscore(int position, String playername, int points,
+			String location, String date) {
 		this.playername = playername;
 		this.points = points;
 		this.location = location;
 		this.date = date;
 		this.position = position;
 	}
-	
+
+	// Getters and setters
 	public int getPosition() {
 		return position;
 	}
@@ -58,6 +62,5 @@ public class Highscore implements Serializable{
 	public void setDate(String date) {
 		this.date = date;
 	}
-	
-	
+
 }

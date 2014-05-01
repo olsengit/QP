@@ -32,14 +32,14 @@ import com.hiof.objects.Category;
 import com.hiof.objects.User;
 
 public class CategoryActivity extends ActionBarActivity {
-	
+
 	private List<Category> categories = new ArrayList<Category>();
 	public CategoryActivity local;
 	private int count = 0;
 	private Session session = null;
 	private static String userName;
 	TextView userLoggedIn;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,39 +52,43 @@ public class CategoryActivity extends ActionBarActivity {
 		String intentUserName = getIntent().getStringExtra("USERNAME");
 		setTitle("Select category");
 		local = this;
-		try{
+
+		// Try to get the facebook-session, gets the firstname
+		try {
 			session = Session.getActiveSession();
 			System.out.println("Session i category" + session.toString());
-			if(session != null && session.isOpened()){
+			if (session != null && session.isOpened()) {
 				makeMeRequest(session);
 			}
-		}
-		catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			System.out.println("Session i category , ingen facebook session");
 		}
-		if(intentUserName != null) {
-			if(!intentUserName.isEmpty()) {
+		// Gets the username from the intent
+		if (intentUserName != null) {
+			if (!intentUserName.isEmpty()) {
 				System.out.println("Intent username empty");
 				userName = intentUserName;
 			}
 		}
+		// If its not a username from the intent we know that the user choosed a
+		// username from the username-list.
 		else {
 			SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
 			List<User> users = db.getAllUsers();
-			if(users.size() > 0) {
-				User lastUserAdded = users.get(users.size()-1);
+			if (users.size() > 0) {
+				User lastUserAdded = users.get(users.size() - 1);
 				userName = lastUserAdded.getUserName();
 				System.out.println("username " + userName);
 			}
 		}
 	}
-	
-	 @Override
-	    protected void onResume() {
-	        super.onResume();
-	        new FillCategoryListView().execute();
-	 }
-        
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// Fill the category listview when the app is resumed
+		new FillCategoryListView().execute();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,11 +105,13 @@ public class CategoryActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.log_out) {
 			if (session != null) {
+				// Deletes the facebook session
 				try {
 					session = Session.getActiveSession();
 					session.closeAndClearTokenInformation();
 				} catch (NullPointerException e) {
-					System.out.println("performLogout(): User was logged in with email");
+					System.out
+							.println("performLogout(): User was logged in with email");
 				}
 			}
 			Intent i = new Intent(this, MainActivity.class);
@@ -114,7 +120,7 @@ public class CategoryActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	private void makeMeRequest(final Session session) {
 		// Make an API call to get user data and define a
 		// new callback to handle the response.
@@ -125,9 +131,8 @@ public class CategoryActivity extends ActionBarActivity {
 						// If the response is successful
 						if (session == Session.getActiveSession()) {
 							if (user != null) {
-								System.out.println("Session" + user.getFirstName());
 								userName = user.getFirstName();
-								userLoggedIn = (TextView)findViewById(R.id.textview_userloggedin);
+								userLoggedIn = (TextView) findViewById(R.id.textview_userloggedin);
 								userLoggedIn.setText("Player : " + userName);
 							}
 						}
@@ -135,7 +140,10 @@ public class CategoryActivity extends ActionBarActivity {
 				});
 		request.executeAsync();
 	}
-	
+
+	/*
+	 * Method that starts the quizactivity
+	 */
 	private void startQuiz(int categoryid, String category) {
 		Intent i = new Intent(this, QuizActivity.class);
 		i.putExtra("USERNAME", userName);
@@ -144,39 +152,46 @@ public class CategoryActivity extends ActionBarActivity {
 		startActivity(i);
 	}
 
-	
-	private class FillCategoryListView extends AsyncTask<Void, Void, List<Category>> {
+	/*
+	 * Asynctask - Fills the listview with categories
+	 */
+	private class FillCategoryListView extends
+			AsyncTask<Void, Void, List<Category>> {
 		private ProgressDialog Dialog = new ProgressDialog(local);
 		private ListView categoryItems;
-		
+
 		@Override
-	    protected void onPreExecute(){
+		protected void onPreExecute() {
 			Dialog.setMessage("Loading categories..");
 			Dialog.show();
-	    }
-		
+		}
+
 		@Override
 		protected List<Category> doInBackground(Void... params) {
 			try {
+				// Gets all categories from database
 				new HandleQuery();
 				categories = HandleQuery.getAllCategories();
 				return categories;
-				
+
 			} catch (NullPointerException e) {
-				System.out.println("AsyncTask in CategoryActivity returns null while trying to get all categories from database");
+				System.out
+						.println("AsyncTask in CategoryActivity returns null while trying to get all categories from database");
 				return null;
 			}
 		}
 
 		@Override
 		protected void onPostExecute(final List<Category> result) {
-			if(result!=null){
+			// If we got anything from database
+			if (result != null) {
 				// Get ListView
 				categoryItems = (ListView) findViewById(R.id.listview_category);
-				
+
 				// Create custom list adapter
-				CustomCategoryAdapter adapter = new CustomCategoryAdapter(local, result);
-				
+				CustomCategoryAdapter adapter = new CustomCategoryAdapter(
+						local, result);
+
 				// Set list adapter for the ListView
 				categoryItems.setAdapter(adapter);
 				categoryItems.setOnItemClickListener(new OnItemClickListener() {
@@ -184,25 +199,34 @@ public class CategoryActivity extends ActionBarActivity {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
-						System.out.println("Clicked "+result.get(position));
-						startQuiz(result.get(position).getCategoryid(), result.get(position).getCategoryname());
+						startQuiz(result.get(position).getCategoryid(), result
+								.get(position).getCategoryname());
 					}
 				});
-			}else{
-				if(++count<=3){
-					Toast.makeText(local, "Something went wrong, reloading ("+count+" of 3 attempts)... Check your connection", Toast.LENGTH_SHORT).show();
+			}
+			// If we didn't get anything from the database we write a
+			// toast-message and try again every second for three seconds
+			else {
+				if (++count <= 3) {
+					Toast.makeText(
+							local,
+							"Something went wrong, reloading ("
+									+ count
+									+ " of 3 attempts)... Check your connection",
+							Toast.LENGTH_SHORT).show();
 					new CountDownTimer(2000, 1000) {
 						@Override
 						public void onTick(long millisUntilFinished) {
 							// Do nothing
 						}
+
 						@Override
 						public void onFinish() {
 							new FillCategoryListView().execute();
 						}
-					  }.start();
-				}else{
-					//There is something wrong, send user to start
+					}.start();
+				} else {
+					// There is something wrong, send user to start
 					Intent i = new Intent(local, MainActivity.class);
 					startActivity(i);
 				}
@@ -215,12 +239,12 @@ public class CategoryActivity extends ActionBarActivity {
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
-		
+
 		public PlaceholderFragment() {
 		}
 
 		TextView userLoggedIn;
-		
+
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -232,11 +256,10 @@ public class CategoryActivity extends ActionBarActivity {
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			userLoggedIn = (TextView) getView().findViewById(R.id.textview_userloggedin);
+			userLoggedIn = (TextView) getView().findViewById(
+					R.id.textview_userloggedin);
 			userLoggedIn.setText("Player : " + userName);
-		}		
+		}
 	}
-	
-	
 
 }
