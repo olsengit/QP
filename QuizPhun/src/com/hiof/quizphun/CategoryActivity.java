@@ -71,9 +71,11 @@ public class CategoryActivity extends ActionBarActivity {
 		else {
 			SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
 			List<User> users = db.getAllUsers();
-			User lastUserAdded = users.get(users.size()-1);
-			userName = lastUserAdded.getUserName();
-			System.out.println("username " + userName);
+			if(users.size() > 0) {
+				User lastUserAdded = users.get(users.size()-1);
+				userName = lastUserAdded.getUserName();
+				System.out.println("username " + userName);
+			}
 		}
 	}
 	
