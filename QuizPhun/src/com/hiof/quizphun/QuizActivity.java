@@ -130,7 +130,7 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 
 	private void startQuiz() {
 		if(questions.size()==10){
-			if (++count_question <= 10) {
+			if (++count_question <= 1) {
 				setTitle(categoryname + " (" + count_question + " of 10)");
 				nextQuestion();
 			}else{

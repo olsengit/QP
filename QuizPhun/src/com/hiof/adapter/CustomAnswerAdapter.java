@@ -1,18 +1,16 @@
 package com.hiof.adapter;
 
-import java.text.DecimalFormat;
 import java.util.List;
-import com.hiof.objects.Answer;
-import com.hiof.quizphun.R;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.hiof.objects.Answer;
+import com.hiof.quizphun.R;
 
 public class CustomAnswerAdapter extends BaseAdapter{
 
@@ -23,7 +21,6 @@ public class CustomAnswerAdapter extends BaseAdapter{
 	        mContext = c;
 	        this.answers = answers;
 	    }
-	
 	
 	@Override
 	public int getCount() {
