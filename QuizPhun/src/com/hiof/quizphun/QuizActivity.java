@@ -144,13 +144,13 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 					locationString = "Unknown";
 				}
 				getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).addToBackStack("Score").commit();
-				Thread insertHighscoreThread = new Thread(new Runnable() {
+				Thread insertScoreThread = new Thread(new Runnable() {
 		            @Override
 		            public void run() {
-		            	HandleQuery.insertHighscore(playerName, points, locationString);
+		            	HandleQuery.insertScores(playerName, points, locationString);
 		            }
 		        });
-				insertHighscoreThread.start();
+				insertScoreThread.start();
 			}
 		}else{
 			Toast.makeText(local, "Not enough questions in this category to play", Toast.LENGTH_SHORT).show();

@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.hiof.objects.User;
 import com.hiof.quizphun.R;
 
+/*
+ * Adapter for the user listview
+ */
 public class CustomUserAdapter extends ArrayAdapter<User> {
 	private final Context context;
 	private final List<User> userObjects;
@@ -21,18 +24,22 @@ public class CustomUserAdapter extends ArrayAdapter<User> {
 		this.context = context;
 		this.userObjects = userObjects;
 	}
-	
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent){
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.user_listview_row, parent, false);
-		
-		TextView twUserNameId = (TextView) rowView.findViewById(R.id.textview_username_id);
-		TextView twUserName = (TextView) rowView.findViewById(R.id.textview_username);
-		
+	public View getView(int position, View convertView, ViewGroup parent) {
+		LayoutInflater inflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View rowView = inflater.inflate(R.layout.user_listview_row, parent,
+				false);
+
+		TextView twUserNameId = (TextView) rowView
+				.findViewById(R.id.textview_username_id);
+		TextView twUserName = (TextView) rowView
+				.findViewById(R.id.textview_username);
+
 		twUserNameId.setText(userObjects.get(position).getId() + ". ");
 		twUserName.setText(userObjects.get(position).getUserName());
-		
+
 		return rowView;
 	}
 }
