@@ -129,27 +129,34 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 	}
 
 	private void startQuiz() {
-		if (++count_question <= 1) {
-			setTitle(categoryname + " (" + count_question + " of 10)");
-			nextQuestion();
+		if(questions.size()==10){
+			if (++count_question <= 10) {
+				setTitle(categoryname + " (" + count_question + " of 10)");
+				nextQuestion();
+			}else{
+				getGpsLocation();
+				convertGpsLocToCity();
+				playerName = getIntent().getStringExtra("USERNAME");
+				if(location != null) {
+					locationString = city;
+				}
+				else {
+					locationString = "Unknown";
+				}
+				getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).addToBackStack("Score").commit();
+				Thread insertHighscoreThread = new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+		            	HandleQuery.insertHighscore(playerName, points, locationString);
+		            }
+		        });
+				insertHighscoreThread.start();
+			}
 		}else{
-			getGpsLocation();
-			convertGpsLocToCity();
-			playerName = getIntent().getStringExtra("USERNAME");
-			if(location != null) {
-				locationString = city;
-			}
-			else {
-				locationString = "Unknown";
-			}
-			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).addToBackStack("Score").commit();
-			Thread insertHighscoreThread = new Thread(new Runnable() {
-	            @Override
-	            public void run() {
-	            	HandleQuery.insertHighscore(playerName, points, locationString);
-	            }
-	        });
-			insertHighscoreThread.start();
+			Toast.makeText(local, "Not enough questions in this category to play", Toast.LENGTH_SHORT).show();
+			Intent i = new Intent(this, CategoryActivity.class);
+			startActivity(i);
+			finish();
 		}
 	}
 	
