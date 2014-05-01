@@ -168,8 +168,12 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (addresses.size() > 0) 
+		
+		if (addresses.size() > 0  && addresses!=null){
 		    city = addresses.get(0).getLocality();
+		}else{
+			city = "Unknown";
+		}
 	}
 
 	private Location getGpsLocation() {
