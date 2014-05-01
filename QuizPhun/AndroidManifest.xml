@@ -25,7 +25,7 @@
          android:exported="false"/>
         
         <!-- APPWIDGET UPDATES -->
-        <receiver android:name=".QuizPhunWidget" android:label="@string/app_name">
+        <receiver android:name="com.hiof.quizphun.QuizPhunWidget" android:label="@string/app_name">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/quizphun_widget_provider" />
