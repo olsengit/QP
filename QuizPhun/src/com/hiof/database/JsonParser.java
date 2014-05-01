@@ -15,6 +15,7 @@ import org.json.JSONException;
 
 public class JsonParser {
 
+	//test
 	public JSONArray getJsonArray(String url){
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpResponse response;
