@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -56,7 +57,7 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 	private double lat, lon;
 	private int count_question = 0;
 	Button nextQuestion;
-	private CountDownTimer cdt;
+	private CountDownTimer cdt, cdtError;
 	private LocationManager locationManager;
 	private String provider, city, categoryname;
 	private Location location;
@@ -141,7 +142,7 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 			else {
 				locationString = "Unknown";
 			}
-			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.container, new Score()).addToBackStack("Score").commit();
 			Thread insertHighscoreThread = new Thread(new Runnable() {
 	            @Override
 	            public void run() {
@@ -165,7 +166,6 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 	}
 
 	private Location getGpsLocation() {
-		//http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial/
 		try {
 		    boolean isGPSEnabled = false;
 		    boolean isNetworkEnabled = false;
@@ -308,7 +308,10 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.log_out) {
-			cdt.cancel();
+			if(cdtError != null)
+				cdtError.cancel();
+			if(cdt != null)
+				cdt.cancel();
 			Intent i = new Intent(this, MainActivity.class);
 			startActivity(i);
 			finish();
@@ -353,8 +356,8 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 				startQuiz();
 			} else {
 				if (++count <= 3) {
-					Toast.makeText(local,"Something went wrong, reloading (" + count + " of 3 attempts)...", Toast.LENGTH_SHORT).show();
-					new CountDownTimer(2000, 1000) {
+					Toast.makeText(local,"Something went wrong, reloading (" + count + " of 3 attempts)... Check your connection", Toast.LENGTH_SHORT).show();
+					cdtError = new CountDownTimer(2000, 1000) {
 						@Override
 						public void onTick(long millisUntilFinished) {
 							// Do nothing
@@ -376,7 +379,7 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 	}
 	
 	/**
-	 * A fragment containing a menu for admins who are logged in
+	 * A fragment showing the score
 	 */
 	public static class Score extends Fragment implements OnClickListener{
 		
@@ -404,8 +407,8 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 			newGame.setOnClickListener(this);
 			showHighscore.setOnClickListener(this);
 			highscoreUserTv.setText("Player : " + playerName);
-			locationTexTv.setText("Location :" + locationString);
-			pointsTv.setText("Points :" + points);
+			locationTexTv.setText("Location : " + locationString);
+			pointsTv.setText("Points : " + points);
 		}
 		
 		@Override

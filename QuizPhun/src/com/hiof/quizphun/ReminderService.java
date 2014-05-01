@@ -27,36 +27,33 @@ public class ReminderService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		RemindUser(false);
+		RemindUser();
 	}
 	
 	/*
 	 * Remind user to play if x minutes has passed since the user played
 	 * A notification message will be sent
 	 */
-	private void RemindUser(final boolean firstCall) {
+	private void RemindUser() {
 		reminderThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if(!firstCall) {
-					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-					PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-					
-					Notification n = new NotificationCompat.Builder(getApplicationContext()) 
-					.setContentTitle("QuizPhun")
-					.setContentText("You haven't played for 24 hours, come play")
-					.setSmallIcon(R.drawable.qp)
-					.setContentIntent(pIntent).build(); 
-					
-					n.flags=Notification.FLAG_AUTO_CANCEL; 
-					NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-					nManager.notify(0, n);
-				}
+				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+				PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+				
+				Notification n = new NotificationCompat.Builder(getApplicationContext()) 
+				.setContentTitle("QuizPhun")
+				.setContentText("You haven't played for 24 hours, come play")
+				.setSmallIcon(R.drawable.qp)
+				.setContentIntent(pIntent).build(); 
+				
+				n.flags=Notification.FLAG_AUTO_CANCEL; 
+				NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+				nManager.notify(0, n);
 			}
 		});
 		try {
-			reminderThread.sleep(10000);
-			//reminderThread.sleep(1440000);//Asleep for 24 hours
+			reminderThread.sleep(1440000);//Asleep for 24 hours
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

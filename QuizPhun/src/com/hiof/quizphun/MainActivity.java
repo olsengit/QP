@@ -2,12 +2,8 @@ package com.hiof.quizphun;
 
 import java.util.List;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -16,21 +12,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.hiof.adapter.CustomHighscoreAdapter;
 import com.hiof.adapter.CustomUserAdapter;
-import com.hiof.database.HandleQuery;
 import com.hiof.database.SqliteDatabaseHandler;
-import com.hiof.objects.Highscore;
-import com.hiof.objects.Question;
 import com.hiof.objects.User;
 
 public class MainActivity extends ActionBarActivity {

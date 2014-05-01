@@ -58,17 +58,22 @@ public class CategoryActivity extends ActionBarActivity {
 			if(session != null && session.isOpened()){
 				makeMeRequest(session);
 			}
-			else if(!intentUserName.isEmpty()) {
+		}
+		catch(NullPointerException e){
+			System.out.println("Session i category , ingen facebook session");
+		}
+		if(intentUserName != null) {
+			if(!intentUserName.isEmpty()) {
+				System.out.println("Intent username empty");
 				userName = intentUserName;
 			}
-			else {
-				SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
-				List<User> users = db.getAllUsers();
-				User lastUserAdded = users.get(users.size()-1);
-				userName = lastUserAdded.getUserName();
-			}
-		}catch(NullPointerException e){
-			System.out.println("Session i category , ingen facebook session");
+		}
+		else {
+			SqliteDatabaseHandler db = new SqliteDatabaseHandler(this);
+			List<User> users = db.getAllUsers();
+			User lastUserAdded = users.get(users.size()-1);
+			userName = lastUserAdded.getUserName();
+			System.out.println("username " + userName);
 		}
 	}
 	
@@ -81,7 +86,6 @@ public class CategoryActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.general, menu);
 		return true;
@@ -114,7 +118,6 @@ public class CategoryActivity extends ActionBarActivity {
 		// new callback to handle the response.
 		Request request = Request.newMeRequest(session,
 				new Request.GraphUserCallback() {
-
 					@Override
 					public void onCompleted(GraphUser user, Response response) {
 						// If the response is successful
@@ -185,7 +188,7 @@ public class CategoryActivity extends ActionBarActivity {
 				});
 			}else{
 				if(++count<=3){
-					Toast.makeText(local, "Something went wrong, reloading ("+count+" of 3 attempts)...", Toast.LENGTH_SHORT).show();
+					Toast.makeText(local, "Something went wrong, reloading ("+count+" of 3 attempts)... Check your connection", Toast.LENGTH_SHORT).show();
 					new CountDownTimer(2000, 1000) {
 						@Override
 						public void onTick(long millisUntilFinished) {
