@@ -136,7 +136,7 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 		// If the size of the list is 10, we know everything is alright
 		if (questions.size() == 10) {
 			// If test to keep track of when the quiz is finished
-			if (++count_question <= 1) {
+			if (++count_question <= 10) {
 				setTitle(categoryname + " (" + count_question + " of 10)");
 				nextQuestion();
 			} else {

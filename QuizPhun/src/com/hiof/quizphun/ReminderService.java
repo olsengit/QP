@@ -60,8 +60,7 @@ public class ReminderService extends IntentService {
 		});
 		try {
 			// Sleep thread for 24 hours
-			// reminderThread.sleep(1440000);
-			reminderThread.sleep(30000);
+			reminderThread.sleep(1440000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
