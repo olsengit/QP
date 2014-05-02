@@ -16,24 +16,24 @@
         android:scaleType="centerInside"
         android:src="@drawable/quizphun_logo" />
 
-	<com.facebook.widget.LoginButton
-	    xmlns:fb="http://schemas.android.com/apk/res-auto"
-	    android:id="@+id/authButton"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_above="@+id/button_main_usernamelogin"
-	    android:layout_centerHorizontal="true"
-	    android:layout_marginBottom="26dp"
-	    fb:login_text="@string/facebook_login_text" />
-
 	<Button
 	    android:id="@+id/button_main_usernamelogin"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_alignLeft="@+id/authButton"
 	    android:layout_alignRight="@+id/authButton"
-	    android:layout_centerVertical="true"
+	    android:layout_below="@+id/authButton"
 	    android:onClick="buttonLoginWithUsernameClicked"
 	    android:text="@string/use_playername"
 	    android:textSize="16.0sp" />
+
+	<com.facebook.widget.LoginButton
+	    xmlns:fb="http://schemas.android.com/apk/res-auto"
+	    android:id="@+id/authButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/imageview_main_logo"
+	    android:layout_centerHorizontal="true"
+	    fb:login_text="@string/facebook_login_text" />
+
 </RelativeLayout>

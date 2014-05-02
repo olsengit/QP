@@ -3,14 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-   <TextView 
-        android:id="@+id/textview_highscore_userloggedin"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-		android:textSize="20sp"
-		android:text="@string/user"
-        android:textStyle="bold"/>
  	
  	<TextView 
         android:id="@+id/textview_location"
@@ -18,7 +10,8 @@
         android:layout_height="wrap_content"
 		android:textSize="20sp"
 		android:layout_below="@+id/textview_highscore_userloggedin"
-		android:text="@string/loc"		
+		android:text="@string/loc"	
+		android:gravity="center"	
         android:textStyle="bold"/>
  	
  	<TextView 
@@ -27,7 +20,8 @@
         android:layout_height="wrap_content"
 		android:textSize="20sp"
 		android:layout_below="@+id/textview_location"
-		android:text="@string/points"		
+		android:text="@string/points"	
+		android:gravity="center"	
         android:textStyle="bold"/>
  	
  	<LinearLayout
@@ -58,5 +52,15 @@
 	    
 	</LinearLayout>
 
+ 	<TextView
+ 	    android:id="@+id/textview_highscore_userloggedin"
+ 	    android:layout_width="fill_parent"
+ 	    android:layout_height="wrap_content"
+ 	    android:layout_alignParentLeft="true"
+ 	    android:layout_alignParentTop="true"
+ 	    android:text="@string/user"
+ 	    android:gravity="center"
+ 	    android:textSize="20sp"
+ 	    android:textStyle="bold" />
 
 </RelativeLayout>

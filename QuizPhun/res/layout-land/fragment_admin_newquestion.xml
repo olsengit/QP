@@ -7,13 +7,13 @@
         android:id="@+id/edittext_admin_answer1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/edittext_admin_question"
+        android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
         android:layout_toLeftOf="@+id/radiogroup_admin_correct_answer"
+        android:ems="10"
         android:hint="@string/first_answer"
         android:imeOptions="actionNext"
-        android:inputType="text"
-        android:ems="10" />
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/edittext_admin_answer2"
@@ -51,38 +51,6 @@
         android:inputType="text"
         android:ems="10" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="14dp"
-        android:text="@string/select_category" />
-
-    <Spinner
-        android:id="@+id/spinner_admin_newquestion_category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView2" />
-
-    <EditText
-        android:id="@+id/edittext_admin_question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/spinner_admin_newquestion_category"
-        android:layout_marginTop="16dp"
-        android:imeOptions="actionNext"
-        android:inputType="text"
-        android:ems="10"
-        android:hint="@string/enter_question" >
-
-        <requestFocus />
-    </EditText>
-
     <RadioGroup
         android:id="@+id/radiogroup_admin_correct_answer"
         android:layout_width="wrap_content"
@@ -116,15 +84,6 @@
             android:paddingTop="18dp" />
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/edittext_admin_question"
-        android:layout_marginTop="18dp"
-        android:text="@string/enter_4_answers_and_select_the_correct_one" />
-
     <Button
         android:id="@+id/button_admin_newquestu"
         android:layout_width="wrap_content"
@@ -134,5 +93,42 @@
         android:layout_marginTop="18dp"
         android:onClick="buttonSaveQuestionClicked"
         android:text="@string/save_question" />
+
+    <EditText
+        android:id="@+id/edittext_admin_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:hint="@string/enter_question"
+        android:imeOptions="actionNext"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/edittext_admin_question"
+        android:layout_marginTop="18dp"
+        android:text="@string/enter_4_answers_and_select_the_correct_one" />
+
+    <Spinner
+        android:id="@+id/spinner_admin_newquestion_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/edittext_admin_answer3"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spinner_admin_newquestion_category"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="15dp"
+        android:text="@string/select_category" />
 
 </RelativeLayout>
