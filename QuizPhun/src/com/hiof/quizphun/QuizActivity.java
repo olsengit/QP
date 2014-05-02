@@ -187,8 +187,10 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 			e.printStackTrace();
 		}
 
-		if (addresses.size() > 0 && addresses != null) {
-			city = addresses.get(0).getLocality();
+		if(addresses != null) {
+			if (addresses.size() > 0) {
+				city = addresses.get(0).getLocality();
+			}
 		}
 		// If we can't get a city, we set the text to Unknown
 		else {
