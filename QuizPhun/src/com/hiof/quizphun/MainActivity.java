@@ -247,26 +247,36 @@ public class MainActivity extends ActionBarActivity {
 
 			SqliteDatabaseHandler db = new SqliteDatabaseHandler(getActivity());
 			final List<User> users = db.getAllUsers();
-			// Create custom list adapter
-			final CustomUserAdapter adapter = new CustomUserAdapter(
-					getActivity(), users);
-
-			// Set list adapter for the ListView
-			userItems.setAdapter(adapter);
-			userItems.setEnabled(true);
-			userItems.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
-					// Gets the position of the item clicked in the listview,
-					// and sends the user to the categoryactivity
-					String userName = users.get(position).getUserName();
-					Intent i = new Intent(getActivity(), CategoryActivity.class);
-					i.putExtra("USERNAME", userName);
-					startActivity(i);
-				}
-			});
+			// If the list is empty, we will send the user back.
+			if(users.isEmpty()){
+				Toast.makeText(getActivity(), "There is no users created yet", Toast.LENGTH_SHORT).show();
+				getActivity().getSupportFragmentManager().beginTransaction()
+				.replace(R.id.container, new PlayWithUsernameFragment())
+				.addToBackStack(null).commit();
+			}
+			// If there is entries in the list, we let the user choose a username allready created
+			else {
+				// Create custom list adapter
+				final CustomUserAdapter adapter = new CustomUserAdapter(
+						getActivity(), users);
+	
+				// Set list adapter for the ListView
+				userItems.setAdapter(adapter);
+				userItems.setEnabled(true);
+				userItems.setOnItemClickListener(new OnItemClickListener() {
+	
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						// Gets the position of the item clicked in the listview,
+						// and sends the user to the categoryactivity
+						String userName = users.get(position).getUserName();
+						Intent i = new Intent(getActivity(), CategoryActivity.class);
+						i.putExtra("USERNAME", userName);
+						startActivity(i);
+					}
+				});
+			}
 		}
 
 	}
