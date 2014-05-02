@@ -31,7 +31,7 @@ public class ReminderService extends IntentService {
 	}
 
 	/*
-	 * Remind user to play if 1440000 minutes has passed since the user played A
+	 * Remind user to play if 86400000 seconds has passed since the user played A
 	 * notification message will be sent
 	 */
 	private void RemindUser() {
@@ -60,7 +60,7 @@ public class ReminderService extends IntentService {
 		});
 		try {
 			// Sleep thread for 24 hours
-			reminderThread.sleep(1440000);
+			reminderThread.sleep(86400000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
