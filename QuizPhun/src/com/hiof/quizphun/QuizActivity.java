@@ -59,17 +59,8 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 	private LocationManager locationManager;
 	private String provider, city, categoryname;
 	private Location location;
-	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 200; // 200
-																		// meters
-																		// before
-																		// it
-																		// asks
-																		// for
-																		// updates
-	private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 5; // 5 minutes
-																	// before it
-																	// asks for
-																	// updates
+	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 200; 
+	private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 5; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
