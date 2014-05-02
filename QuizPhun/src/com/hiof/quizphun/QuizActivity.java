@@ -88,6 +88,8 @@ public class QuizActivity extends ActionBarActivity implements LocationListener 
 		locationManager.requestLocationUpdates(provider, 400, 1, this);
 		points = 0;
 		new prepareTenQuestions().execute();
+		Intent reminderServiceIntent = new Intent(this, ReminderService.class);
+		stopService(reminderServiceIntent);
 	}
 
 	@Override
